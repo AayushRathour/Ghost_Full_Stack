@@ -1,0 +1,5 @@
+opencv-python>=4.5.0
+numpy>=1.19.0
+mtcnn>=0.1.0
+tensorflow>=2.5.0
+colorama>=0.4.4
