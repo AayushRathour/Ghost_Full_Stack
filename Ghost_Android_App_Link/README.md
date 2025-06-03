@@ -1,8 +1,9 @@
-# Ghost Android Application
+![WhatsApp Image 2025-06-04 at 00 01 04_c8970372](https://github.com/user-attachments/assets/3bf977cd-4ea2-4ea1-8263-8de17915b288)# Ghost Android Application
 
 This is the Android version of the Ghost project, providing mobile access to deepfake detection, fraud detection, OTP verification, and voice-related features.
 
-## Download and Installation
+## To Download Ghost App Click on - Ghost_Android_App_Link.apk & click on Download Button 
+
 
 ### System Requirements
 - Android 7.0 (Nougat) or higher
