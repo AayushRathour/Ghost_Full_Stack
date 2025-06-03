@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ghost | Deepfake Protection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            green: '#00ff41',
+                            blue: '#00f7ff',
+                            purple: '#bd00ff',
+                            pink: '#ff00a0',
+                            yellow: '#ffd700'
+                        },
+                        dark: {
+                            900: '#0a0a0a',
+                            800: '#121212',
+                            700: '#1a1a1a'
+                        }
+                    },
+                    fontFamily: {
+                        'terminal': ['Courier New', 'monospace'],
+                        'tech': ['Rajdhani', 'sans-serif']
+                    },
+                    animation: {
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'glow-blue': 'glow-blue 2s ease-in-out infinite alternate',
+                        'glow-purple': 'glow-purple 2s ease-in-out infinite alternate',
+                        'glow-pink': 'glow-pink 2s ease-in-out infinite alternate',
+                        'glow-yellow': 'glow-yellow 2s ease-in-out infinite alternate',
+                        'scroll': 'scroll 30s linear infinite',
+                        'flicker': 'flicker 0.5s infinite alternate',
+                        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-in': 'slide-in 0.5s ease-out forwards'
+                    },
+                    keyframes: {
+                        'glow': {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00ff41, 0 0 20px #00ff41' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00ff41, 0 0 40px #00ff41' }
+                        },
+                        'glow-blue': {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #00f7ff, 0 0 20px #00f7ff' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #00f7ff, 0 0 40px #00f7ff' }
+                        },
+                        'glow-purple': {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #bd00ff, 0 0 20px #bd00ff' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #bd00ff, 0 0 40px #bd00ff' }
+                        },
+                        'glow-pink': {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00a0, 0 0 20px #ff00a0' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00a0, 0 0 40px #ff00a0' }
+                        },
+                        'glow-yellow': {
+                            'from': { 'text-shadow': '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ffd700, 0 0 20px #ffd700' },
+                            'to': { 'text-shadow': '0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ffd700, 0 0 40px #ffd700' }
+                        },
+                        'scroll': {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' }
+                        },
+                        'flicker': {
+                            '0%': { opacity: '0.7' },
+                            '100%': { opacity: '1' }
+                        },
+                        'slide-in': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .light-mode {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .default-mode {
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.giphy.com/media/l0HU7JI8I5Jyb8QBi/giphy.gif') center/cover;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .cyber-input {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            padding: 12px 15px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-family: 'terminal', monospace;
+        }
+        
+        .cyber-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00ff41;
+            border-color: #00f7ff;
+        }
+        
+        .cyber-btn {
+            position: relative;
+            overflow: hidden;
+            border: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .btn-effect-1:hover {
+            background-color: #00ff41;
+            color: #000;
+            box-shadow: 0 0 15px #00ff41;
+        }
+        
+        .btn-effect-2::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #00f7ff;
+            transition: width 0.3s;
+        }
+        
+        .btn-effect-2:hover::before {
+            width: 100%;
+        }
+        
+        .btn-effect-3:hover {
+            animation: flicker 0.5s infinite alternate;
+        }
+        
+        .btn-effect-4 {
+            border: 1px solid #bd00ff;
+        }
+        
+        .btn-effect-4:hover {
+            background-color: #bd00ff;
+            color: #000;
+            box-shadow: 0 0 20px #bd00ff;
+            transform: translateY(-2px);
+        }
+        
+        .btn-effect-5::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn-effect-5:hover::after {
+            animation: pulse 1s ease-out;
+        }
+        
+        .feature-card {
+            background: rgba(18, 18, 18, 0.7);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        
+        .feature-card:hover {
+            border-color: #00ff41;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 65, 0.2);
+        }
+        
+        .tech-scroll {
+            animation: scroll 30s linear infinite;
+        }
+        
+        .tech-item {
+            min-width: 120px;
+            text-align: center;
+            margin: 0 20px;
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00a0;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00f7ff;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(32px, 9999px, 76px, 0); }
+            20% { clip: rect(108px, 9999px, 23px, 0); }
+            40% { clip: rect(91px, 9999px, 29px, 0); }
+            60% { clip: rect(111px, 9999px, 59px, 0); }
+            80% { clip: rect(28px, 9999px, 84px, 0); }
+            100% { clip: rect(68px, 9999px, 94px, 0); }
+        }
+        
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            20% { clip: rect(26px, 9999px, 42px, 0); }
+            40% { clip: rect(64px, 9999px, 29px, 0); }
+            60% { clip: rect(61px, 9999px, 73px, 0); }
+            80% { clip: rect(39px, 9999px, 103px, 0); }
+            100% { clip: rect(17px, 9999px, 54px, 0); }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #121212;
+            border: 1px solid #00ff41;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #00ff41;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .feature-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+        }
+        
+        .otp-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .otp-key {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00f7ff;
+            color: #00f7ff;
+            padding: 15px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+        }
+        
+        .otp-key:hover {
+            background-color: rgba(0, 247, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .fraud-meter {
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(90deg, #00ff41 0%, #ffd700 50%, #ff00a0 100%);
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .fraud-indicator {
+            position: absolute;
+            top: -5px;
+            width: 10px;
+            height: 40px;
+            background-color: white;
+            left: 30%;
+            transform: translateX(-50%);
+        }
+        
+        .voice-wave {
+            width: 100%;
+            height: 200px;
+            background: url('https://media.giphy.com/media/l0HUqtzfnsMk8Yq2A/giphy.gif') center/cover;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .tech-item {
+                min-width: 100px;
+                margin: 0 10px;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .feature-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body class="default-mode">
+    <div class="matrix-bg"></div>
+    
+    <!-- Theme Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <div class="flex items-center space-x-2">
+            <button id="darkModeBtn" class="bg-cyber-green text-black px-3 py-1 rounded-md text-sm font-bold btn-effect-1">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="lightModeBtn" class="bg-cyber-blue text-black px-3 py-1 rounded-md text-sm font-bold btn-effect-2">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button id="defaultModeBtn" class="bg-cyber-purple text-black px-3 py-1 rounded-md text-sm font-bold btn-effect-3">
+                <i class="fas fa-ghost"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Login/Signup Container -->
+    <div id="authContainer" class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8">
+                <h1 class="glitch text-4xl font-bold mb-2" data-text="GHOST">GHOST</h1>
+                <p class="text-cyber-green animate-glow">Deepfake Protection Platform</p>
+            </div>
+            
+            <div class="bg-dark-800 rounded-lg shadow-xl overflow-hidden border border-cyber-green">
+                <div class="flex border-b border-cyber-green">
+                    <button id="loginTab" class="flex-1 py-3 font-bold text-cyber-green bg-dark-700">LOGIN</button>
+                    <button id="signupTab" class="flex-1 py-3 font-bold text-gray-400">SIGN UP</button>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Login Form -->
+                    <form id="loginForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Username</label>
+                            <input type="text" class="w-full cyber-input" placeholder="Enter your username" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Password</label>
+                            <input type="password" class="w-full cyber-input" placeholder="Enter your password" required>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input id="remember" type="checkbox" class="h-4 w-4 text-cyber-green focus:ring-cyber-green border-gray-300 rounded">
+                                <label for="remember" class="ml-2 block text-sm text-gray-300">Remember me</label>
+                            </div>
+                            <a href="#" class="text-sm text-cyber-blue hover:underline">Forgot password?</a>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full cyber-btn py-2 px-4 bg-cyber-green text-black font-bold rounded-md btn-effect-1">
+                                LOGIN
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Signup Form -->
+                    <form id="signupForm" class="space-y-4 hidden">
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Full Name</label>
+                            <input type="text" class="w-full cyber-input" placeholder="Enter your full name" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Email</label>
+                            <input type="email" class="w-full cyber-input" placeholder="Enter your email" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Username</label>
+                            <input type="text" class="w-full cyber-input" placeholder="Choose a username" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Password</label>
+                            <input type="password" class="w-full cyber-input" placeholder="Create a password" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-cyber-green mb-1">Confirm Password</label>
+                            <input type="password" class="w-full cyber-input" placeholder="Confirm your password" required>
+                        </div>
+                        <div>
+                            <button type="submit" class="w-full cyber-btn py-2 px-4 bg-cyber-blue text-black font-bold rounded-md btn-effect-2">
+                                SIGN UP
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section (hidden initially) -->
+    <div id="featuresSection" class="hidden py-12 px-4 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 animate-glow-blue">GHOST PROTECTION FEATURES</h2>
+            <p class="text-lg text-cyber-green max-w-2xl mx-auto">Advanced security solutions to combat deepfake threats in real-time</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <!-- Feature 1 -->
+            <div class="feature-card rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dark-700 flex items-center justify-center mr-4 border border-cyber-green">
+                        <i class="fas fa-eye text-cyber-green text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-cyber-green">Real-Time Deepfake Detection 👁️‍🗨️</h3>
+                </div>
+                <p class="text-gray-300 mb-4">Our AI-powered system analyzes video streams in real-time to detect and flag deepfake manipulations with 99.7% accuracy.</p>
+                <img src="https://media.giphy.com/media/l0HU20BZ6LbSEITza/giphy.gif" alt="Deepfake Detection" class="feature-image">
+                <button class="cyber-btn py-2 px-6 bg-transparent border border-cyber-green text-cyber-green rounded-md btn-effect-4 mt-4 feature-btn" data-feature="deepfake">
+                    EXPLORE <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="feature-card rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dark-700 flex items-center justify-center mr-4 border border-cyber-blue">
+                        <i class="fas fa-microphone-alt text-cyber-blue text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-cyber-blue">Voice Clone Protection 🎙️</h3>
+                </div>
+                <p class="text-gray-300 mb-4">Advanced voice biometrics to detect synthetic voice clones and protect against audio deepfakes in calls and recordings.</p>
+                <img src="https://media.giphy.com/media/l0HU7ptqV9G5vUQ7S/giphy.gif" alt="Voice Protection" class="feature-image">
+                <button class="cyber-btn py-2 px-6 bg-transparent border border-cyber-blue text-cyber-blue rounded-md btn-effect-5 mt-4 feature-btn" data-feature="voice">
+                    EXPLORE <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="feature-card rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dark-700 flex items-center justify-center mr-4 border border-cyber-purple">
+                        <i class="fas fa-phone-volume text-cyber-purple text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-cyber-purple">Voice-Back OTP 📞</h3>
+                </div>
+                <p class="text-gray-300 mb-4">Secure voice-based one-time passwords that verify the speaker's authenticity through unique vocal patterns.</p>
+                <img src="https://media.giphy.com/media/l0HU7A6QxMBfQABi0/giphy.gif" alt="Voice OTP" class="feature-image">
+                <button class="cyber-btn py-2 px-6 bg-transparent border border-cyber-purple text-cyber-purple rounded-md btn-effect-4 mt-4 feature-btn" data-feature="otp">
+                    EXPLORE <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="feature-card rounded-lg p-6 hover:shadow-lg transition-all duration-300">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 rounded-full bg-dark-700 flex items-center justify-center mr-4 border border-cyber-pink">
+                        <i class="fas fa-shield-alt text-cyber-pink text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-cyber-pink">Fraud Scoring Engine ⚠️</h3>
+                </div>
+                <p class="text-gray-300 mb-4">Comprehensive risk assessment system that evaluates multiple factors to detect potential fraud attempts in real-time.</p>
+                <img src="https://media.giphy.com/media/l0HU7Ty4X8dOzQvSU/giphy.gif" alt="Fraud Detection" class="feature-image">
+                <button class="cyber-btn py-2 px-6 bg-transparent border border-cyber-pink text-cyber-pink rounded-md btn-effect-1 mt-4 feature-btn" data-feature="fraud">
+                    EXPLORE <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tech Stack Section -->
+    <div class="py-12 bg-dark-800 mt-12 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-2xl font-bold text-center mb-8 text-cyber-yellow animate-glow-yellow">TECHNOLOGY STACK</h2>
+            <div class="relative overflow-hidden">
+                <div class="flex tech-scroll">
+                    <div class="flex">
+                        <div class="tech-item">
+                            <i class="fab fa-python text-4xl text-cyber-green mb-2"></i>
+                            <p class="text-sm">Python</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-brain text-4xl text-cyber-blue mb-2"></i>
+                            <p class="text-sm">TensorFlow</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-eye text-4xl text-cyber-purple mb-2"></i>
+                            <p class="text-sm">OpenCV</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-react text-4xl text-cyber-pink mb-2"></i>
+                            <p class="text-sm">React</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-server text-4xl text-cyber-yellow mb-2"></i>
+                            <p class="text-sm">Django</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-database text-4xl text-cyber-green mb-2"></i>
+                            <p class="text-sm">PostgreSQL</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-project-diagram text-4xl text-cyber-blue mb-2"></i>
+                            <p class="text-sm">Neural Nets</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-wave-square text-4xl text-cyber-purple mb-2"></i>
+                            <p class="text-sm">FFT Analysis</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-microphone-alt text-4xl text-cyber-pink mb-2"></i>
+                            <p class="text-sm">Librosa</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-chart-line text-4xl text-cyber-yellow mb-2"></i>
+                            <p class="text-sm">Scikit-learn</p>
+                        </div>
+                        <!-- Duplicate for seamless loop -->
+                        <div class="tech-item">
+                            <i class="fab fa-python text-4xl text-cyber-green mb-2"></i>
+                            <p class="text-sm">Python</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-brain text-4xl text-cyber-blue mb-2"></i>
+                            <p class="text-sm">TensorFlow</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-eye text-4xl text-cyber-purple mb-2"></i>
+                            <p class="text-sm">OpenCV</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fab fa-react text-4xl text-cyber-pink mb-2"></i>
+                            <p class="text-sm">React</p>
+                        </div>
+                        <div class="tech-item">
+                            <i class="fas fa-server text-4xl text-cyber-yellow mb-2"></i>
+                            <p class="text-sm">Django</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Feature Modals -->
+    
+    <!-- Deepfake Detection Modal -->
+    <div id="deepfakeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="text-2xl font-bold text-cyber-green mb-4">Real-Time Deepfake Detection 👁️‍🗨️</h2>
+            <img src="https://media.giphy.com/media/l0HU20BZ6LbSEITza/giphy.gif" alt="Deepfake Detection" class="feature-image">
+            <p class="text-gray-300 mb-4">Our cutting-edge deepfake detection system uses a combination of convolutional neural networks (CNNs) and temporal analysis to identify manipulated media with industry-leading accuracy.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-dark-700 p-4 rounded border border-cyber-green">
+                    <h3 class="text-cyber-green font-bold mb-2">Key Features:</h3>
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li>Frame-by-frame analysis</li>
+                        <li>Facial micro-expression tracking</li>
+                        <li>Blink pattern detection</li>
+                        <li>Lip sync accuracy measurement</li>
+                    </ul>
+                </div>
+                <div class="bg-dark-700 p-4 rounded border border-cyber-green">
+                    <h3 class="text-cyber-green font-bold mb-2">Performance:</h3>
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li>99.7% detection accuracy</li>
+                        <li>Less than 200ms latency</li>
+                        <li>Supports 4K resolution</li>
+                        <li>Multi-person detection</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="cyber-btn py-2 px-6 bg-cyber-green text-black font-bold rounded-md btn-effect-1">
+                REQUEST DEMO
+            </button>
+        </div>
+    </div>
+    
+    <!-- Voice Protection Modal -->
+    <div id="voiceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="text-2xl font-bold text-cyber-blue mb-4">Voice Clone Protection 🎙️</h2>
+            <div class="voice-wave"></div>
+            <p class="text-gray-300 mb-4">Our voice protection system analyzes over 100 vocal characteristics to distinguish between genuine human voices and synthetic clones, protecting your organization from audio deepfake attacks.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-dark-700 p-4 rounded border border-cyber-blue">
+                    <h3 class="text-cyber-blue font-bold mb-2">Detection Methods:</h3>
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li>Spectral analysis</li>
+                        <li>Prosody patterns</li>
+                        <li>Breathing patterns</li>
+                        <li>Emotional tone analysis</li>
+                    </ul>
+                </div>
+                <div class="bg-dark-700 p-4 rounded border border-cyber-blue">
+                    <h3 class="text-cyber-blue font-bold mb-2">Use Cases:</h3>
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li>Phone call verification</li>
+                        <li>Voice message authentication</li>
+                        <li>Conference call security</li>
+                        <li>Customer service protection</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="cyber-btn py-2 px-6 bg-cyber-blue text-black font-bold rounded-md btn-effect-2">
+                REQUEST DEMO
+            </button>
+        </div>
+    </div>
+    
+    <!-- OTP Modal -->
+    <div id="otpModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="text-2xl font-bold text-cyber-purple mb-4">Voice-Back OTP 📞</h2>
+            <img src="https://media.giphy.com/media/l0HU7A6QxMBfQABi0/giphy.gif" alt="Voice OTP" class="feature-image">
+            <p class="text-gray-300 mb-4">Our Voice-Back OTP system provides an additional layer of security by verifying the speaker's identity through unique vocal patterns during the OTP process.</p>
+            
+            <div class="bg-dark-700 p-4 rounded border border-cyber-purple mb-6">
+                <h3 class="text-cyber-purple font-bold mb-4">Try the Demo:</h3>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-cyber-purple mb-1">Enter OTP Code</label>
+                    <input type="text" class="w-full cyber-input" placeholder="Waiting for call..." disabled>
+                </div>
+                <div class="otp-keypad">
+                    <div class="otp-key">1</div>
+                    <div class="otp-key">2</div>
+                    <div class="otp-key">3</div>
+                    <div class="otp-key">4</div>
+                    <div class="otp-key">5</div>
+                    <div class="otp-key">6</div>
+                    <div class="otp-key">7</div>
+                    <div class="otp-key">8</div>
+                    <div class="otp-key">9</div>
+                    <div class="otp-key">*</div>
+                    <div class="otp-key">0</div>
+                    <div class="otp-key">#</div>
+                </div>
+            </div>
+            
+            <button class="cyber-btn py-2 px-6 bg-cyber-purple text-black font-bold rounded-md btn-effect-4">
+                REQUEST DEMO
+            </button>
+        </div>
+    </div>
+    
+    <!-- Fraud Detection Modal -->
+    <div id="fraudModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="text-2xl font-bold text-cyber-pink mb-4">Fraud Scoring Engine ⚠️</h2>
+            <img src="https://media.giphy.com/media/l0HU7Ty4X8dOzQvSU/giphy.gif" alt="Fraud Detection" class="feature-image">
+            <p class="text-gray-300 mb-4">Our comprehensive fraud scoring system evaluates multiple risk factors in real-time to detect and prevent fraudulent activities across all communication channels.</p>
+            
+            <div class="bg-dark-700 p-4 rounded border border-cyber-pink mb-6">
+                <h3 class="text-cyber-pink font-bold mb-4">Risk Assessment Demo:</h3>
+                <div class="fraud-meter">
+                    <div class="fraud-indicator"></div>
+                </div>
+                <div class="flex justify-between text-xs">
+                    <span>Low Risk</span>
+                    <span>Medium Risk</span>
+                    <span>High Risk</span>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-cyber-pink font-bold mb-2">Current Session:</h4>
+                        <ul class="text-gray-300">
+                            <li class="mb-1">Voice Analysis: <span class="text-cyber-green">Normal</span></li>
+                            <li class="mb-1">Video Analysis: <span class="text-cyber-yellow">Suspicious</span></li>
+                            <li class="mb-1">Behavior Patterns: <span class="text-cyber-green">Normal</span></li>
+                            <li class="mb-1">Device Fingerprint: <span class="text-cyber-yellow">Anomaly</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-cyber-pink font-bold mb-2">Overall Risk Score:</h4>
+                        <div class="text-4xl font-bold text-cyber-yellow">68%</div>
+                        <p class="text-gray-300 mt-2">Medium risk detected. Recommend additional verification.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="cyber-btn py-2 px-6 bg-cyber-pink text-black font-bold rounded-md btn-effect-1">
+                REQUEST DEMO
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        const lightModeBtn = document.getElementById('lightModeBtn');
+        const defaultModeBtn = document.getElementById('defaultModeBtn');
+        const body = document.body;
+        
+        darkModeBtn.addEventListener('click', () => {
+            body.classList.remove('light-mode', 'default-mode');
+            body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        });
+        
+        lightModeBtn.addEventListener('click', () => {
+            body.classList.remove('dark-mode', 'default-mode');
+            body.classList.add('light-mode');
+            localStorage.setItem('theme', 'light');
+        });
+        
+        defaultModeBtn.addEventListener('click', () => {
+            body.classList.remove('dark-mode', 'light-mode');
+            body.classList.add('default-mode');
+            localStorage.setItem('theme', 'default');
+        });
+        
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            body.classList.remove('default-mode');
+            body.classList.add(currentTheme + '-mode');
+        }
+        
+        // Login/Signup Tabs
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('text-cyber-green', 'bg-dark-700');
+            loginTab.classList.remove('text-gray-400');
+            signupTab.classList.add('text-gray-400');
+            signupTab.classList.remove('text-cyber-green', 'bg-dark-700');
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        });
+        
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('text-cyber-green', 'bg-dark-700');
+            signupTab.classList.remove('text-gray-400');
+            loginTab.classList.add('text-gray-400');
+            loginTab.classList.remove('text-cyber-green', 'bg-dark-700');
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+        
+        // Form Submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate successful login
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('featuresSection').classList.remove('hidden');
+        });
+        
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate successful signup
+            document.getElementById('authContainer').classList.add('hidden');
+            document.getElementById('featuresSection').classList.remove('hidden');
+        });
+        
+        // Feature Modals
+        const featureBtns = document.querySelectorAll('.feature-btn');
+        const modals = document.querySelectorAll('.modal');
+        const closeBtns = document.querySelectorAll('.close-modal');
+        
+        featureBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const feature = btn.getAttribute('data-feature');
+                document.getElementById(`${feature}Modal`).style.display = 'flex';
+            });
+        });
+        
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.closest('.modal').style.display = 'none';
+            });
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+        
+        // OTP Keypad Interaction
+        const otpKeys = document.querySelectorAll('.otp-key');
+        const otpInput = document.querySelector('.otp-keypad').previousElementSibling.querySelector('input');
+        
+        otpKeys.forEach(key => {
+            key.addEventListener('click', () => {
+                if (key.textContent === '#') {
+                    // Submit
+                    otpInput.value = 'OTP Verified!';
+                    otpInput.style.color = '#00ff41';
+                } else if (key.textContent === '*') {
+                    // Clear
+                    otpInput.value = '';
+                    otpInput.style.color = '#00f7ff';
+                } else {
+                    // Add digit
+                    if (otpInput.value.length < 6) {
+                        otpInput.value += key.textContent;
+                    }
+                }
+            });
+        });
+        
+        // Fraud Meter Animation
+        const fraudIndicator = document.querySelector('.fraud-indicator');
+        let position = 30;
+        let direction = 1;
+        
+        setInterval(() => {
+            position += direction * 0.5;
+            if (position > 70 || position < 30) {
+                direction *= -1;
+            }
+            fraudIndicator.style.left = `${position}%`;
+        }, 50);
+    </script>
+</body>
+</html>

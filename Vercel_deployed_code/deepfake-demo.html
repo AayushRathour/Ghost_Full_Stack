@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST - Advanced Deepfake Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-blue: #6366f1;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-cyan: #06b6d4;
+            --text-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark), #1a2238);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .hacker-text {
+            font-family: 'Montserrat', sans-serif;
+            text-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            10% { clip: rect(112px, 9999px, 76px, 0); }
+            20% { clip: rect(85px, 9999px, 77px, 0); }
+            30% { clip: rect(27px, 9999px, 97px, 0); }
+            40% { clip: rect(64px, 9999px, 98px, 0); }
+            50% { clip: rect(61px, 9999px, 85px, 0); }
+            60% { clip: rect(99px, 9999px, 114px, 0); }
+            70% { clip: rect(34px, 9999px, 115px, 0); }
+            80% { clip: rect(98px, 9999px, 129px, 0); }
+            90% { clip: rect(43px, 9999px, 96px, 0); }
+            100% { clip: rect(82px, 9999px, 64px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            10% { clip: rect(66px, 9999px, 72px, 0); }
+            20% { clip: rect(112px, 9999px, 59px, 0); }
+            30% { clip: rect(91px, 9999px, 29px, 0); }
+            40% { clip: rect(20px, 9999px, 28px, 0); }
+            50% { clip: rect(50px, 9999px, 69px, 0); }
+            60% { clip: rect(78px, 9999px, 40px, 0); }
+            70% { clip: rect(102px, 9999px, 68px, 0); }
+            80% { clip: rect(105px, 9999px, 84px, 0); }
+            90% { clip: rect(15px, 9999px, 100px, 0); }
+            100% { clip: rect(64px, 9999px, 44px, 0); }
+        }
+
+        .terminal {
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        .terminal:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.6);
+        }
+
+        .terminal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 25px;
+            background: linear-gradient(90deg, #ff00c1, #6366f1, #06b6d4, #10b981);
+            background-size: 200% 200%;
+            animation: gradient 5s ease infinite;
+            border-radius: 10px 10px 0 0;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-hover-effect-1:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-hover-effect-2:hover {
+            transform: skewX(-10deg);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-hover-effect-3:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(99, 102, 241, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent-cyan);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            opacity: 0.7;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Analysis result animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Video container */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: linear-gradient(45deg, #0f172a, #1e293b);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-blue);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #1e293b;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        /* Screen recording indicator */
+        .recording-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .chart-container {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            height: 250px;
+            backdrop-filter: blur(10px);
+        }
+
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .analytics-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .analytics-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+        }
+
+        .gif-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            height: 200px;
+            background: linear-gradient(45deg, #1e293b, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gif-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+
+        .feature-card:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .tech-badge {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 20px;
+            padding: 5px 15px;
+            display: inline-block;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            background: rgba(99, 102, 241, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .pulse-ring {
+            display: block;
+            width: 10px;
+            height: 10px;
+            background-color: #10b981;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .pulse-ring:before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background-color: #10b981;
+            opacity: 0.4;
+            animation: pulse-ring 2s ease-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.5); opacity: 0.7; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <!-- Cursor Trail -->
+    <div id="cursor-trail"></div>
+    
+    <!-- Screen recording indicator (hidden by default) -->
+    <div id="recordingIndicator" class="recording-indicator hidden">
+        <span class="pulse-ring mr-2"></span> Recording Screen...
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-gray-900/90 backdrop-blur-md fixed w-full z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html" class="text-2xl font-bold hacker-text text-cyan-400 flex items-center">
+                            <i class="fas fa-ghost mr-2"></i> GHOST
+                        </a>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Home</a>
+                            <a href="index.html#features" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Features</a>
+                            <a href="index.html#tech" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Tech Stack</a>
+                            <a href="index.html#about" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">About</a>
+                            <a href="index.html#demo" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Demo</a>
+                            <a href="index.html#contact" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Contact</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6 space-x-4">
+                        <div class="relative">
+                            <button id="theme-toggle" class="bg-gray-800 text-gray-300 hover:text-white px-3 py-1 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-700/50 flex items-center">
+                                <i class="fas fa-moon mr-1"></i> Dark
+                            </button>
+                        </div>
+                        <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-1">
+                            <i class="fas fa-user-plus mr-1"></i> Sign Up
+                        </a>
+                        <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-2">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Login
+                        </a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-gray-900 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="index.html" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="index.html#features" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Features</a>
+                <a href="index.html#tech" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Technology</a>
+                <a href="index.html#about" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="index.html#demo" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Demo</a>
+                <a href="index.html#contact" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+            <div class="pt-4 pb-3 border-t border-gray-700">
+                <div class="flex items-center px-5 space-x-4">
+                    <button id="theme-toggle-mobile" class="bg-gray-800 text-gray-300 hover:text-white px-3 py-1 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-700/50 flex items-center">
+                        <i class="fas fa-moon mr-1"></i> Dark
+                    </button>
+                    <a href="#" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300">
+                        <i class="fas fa-user-plus mr-1"></i> Sign Up
+                    </a>
+                    <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Feature Header -->
+        <section class="mb-16 text-center">
+            <div class="terminal p-8 rounded-lg mb-8 relative overflow-hidden">
+                <div class="grid-pattern"></div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 hacker-text">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">Deepfake Detection</span>
+                </h1>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-6">
+                    Advanced AI analyzes videos in real-time to detect manipulated content with 98.7% accuracy
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <div class="bg-indigo-900/30 px-4 py-2 rounded-full text-indigo-300">
+                        <i class="fas fa-bolt mr-2"></i> Real-time Analysis
+                    </div>
+                    <div class="bg-cyan-900/30 px-4 py-2 rounded-full text-cyan-300">
+                        <i class="fas fa-shield-alt mr-2"></i> 256-bit Encryption
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detection Interface -->
+        <section class="mb-20">
+            <div class="terminal p-6 rounded-lg">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Video Input Section -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-video mr-3 text-cyan-400"></i> Upload or Record Video
+                        </h2>
+                                                
+                        <div class="video-container mb-6" id="videoContainer">
+                            <video id="videoPreview" class="hidden" autoplay muted></video>
+                            <div class="absolute inset-0 flex items-center justify-center" id="videoPlaceholder">
+                                <div class="text-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-600 mb-2"></i>
+                                    <p class="text-gray-500">Upload or record a video to analyze</p>
+                                </div>
+                            </div>
+                        </div>
+                                                
+                        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                            <button id="recordBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 btn-hover-effect-1 flex-1 flex items-center justify-center">
+                                <i class="fas fa-desktop mr-2"></i> Record Screen
+                            </button>
+                            <button id="uploadBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 btn-hover-effect-2 flex-1 flex items-center justify-center">
+                                <i class="fas fa-upload mr-2"></i> Upload Video
+                            </button>
+                            <input type="file" id="videoInput" accept="video/*" class="hidden">
+                        </div>
+                                                
+                        <div class="bg-gray-800/50 p-4 rounded-lg mb-6 hidden" id="recordingControls">
+                            <div class="flex justify-center space-x-4">
+                                <button id="startRecording" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">
+                                    <i class="fas fa-circle mr-1"></i> Start
+                                </button>
+                                <button id="stopRecording" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-full" disabled>
+                                    <i class="fas fa-stop mr-1"></i> Stop
+                                </button>
+                                <button id="cancelRecording" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-full">
+                                    <i class="fas fa-times mr-1"></i> Cancel
+                                </button>
+                            </div>
+                            <div class="mt-4 text-center text-gray-400 text-sm">
+                                Recording time: <span id="recordingTime">00:00</span>
+                            </div>
+                        </div>
+                    </div>
+                                        
+                    <!-- Analysis Section -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                            <i class="fas fa-chart-line mr-3 text-green-400"></i> Analysis Results
+                        </h2>
+                                                
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-white">Detection Status</h3>
+                                <span class="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded" id="statusText">READY</span>
+                            </div>
+                                                        
+                            <div class="progress-container mb-6">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
+                                                        
+                            <div class="hidden" id="loadingIndicator">
+                                <div class="flex flex-col items-center justify-center py-8">
+                                    <div class="spinner mb-4"></div>
+                                    <p class="text-gray-400">Analyzing video content with AI...</p>
+                                    <p class="text-gray-500 text-sm mt-2">Processing 1,200+ facial data points</p>
+                                </div>
+                            </div>
+                                                        
+                            <div class="hidden" id="resultsContainer">
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <div class="bg-gray-900/50 p-4 rounded-lg">
+                                        <p class="text-gray-400 text-sm mb-1">Deepfake Probability</p>
+                                        <p class="text-3xl font-bold" id="deepfakeScore">--%</p>
+                                    </div>
+                                    <div class="bg-gray-900/50 p-4 rounded-lg">
+                                        <p class="text-gray-400 text-sm mb-1">Confidence Level</p>
+                                        <p class="text-3xl font-bold" id="confidenceScore">--%</p>
+                                    </div>
+                                </div>
+                                                                
+                                <div class="mb-6">
+                                    <p class="text-gray-400 text-sm mb-2">Detection Details</p>
+                                    <div class="bg-gray-900/50 p-4 rounded-lg">
+                                        <p class="text-white" id="detectionDetails">No analysis performed yet.</p>
+                                    </div>
+                                </div>
+                                                                
+                                <div class="mb-6">
+                                    <p class="text-gray-400 text-sm mb-2">Manipulation Indicators</p>
+                                    <div class="space-y-2" id="indicatorsList">
+                                        <!-- Indicators will be added here dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Charts Section -->
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                                    <div class="chart-container">
+                                        <canvas id="barChart"></canvas>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="pieChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                
+                        <button id="analyzeBtn" class="bg-green-600 hover:bg-green-700 text-white w-full py-3 rounded-lg font-medium transition-all duration-300 btn-hover-effect-3 hidden">
+                            <i class="fas fa-search mr-2"></i> Analyze Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+                
+        <!-- How It Works -->
+        <section class="mb-20">
+            <div class="terminal p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-8 text-center hacker-text">
+                    How Our Deepfake Detection Works
+                </h2>
+                                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-gray-800/50 p-6 rounded-lg feature-card">
+                        <div class="flex justify-center mb-4">
+                            <div class="gif-container">
+                                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2I4bWZ0c3R0d2x0cGg4Y3VvN3I3M3J6N3k2ZHFqZ3J5NWR0dW5wbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btT1T9qpQZWhNlK/giphy.gif" alt="Neural Network Analysis">
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white text-center mb-3">Neural Network Analysis</h3>
+                        <p class="text-gray-400 text-center">
+                            Our AI examines facial micro-expressions, blinking patterns, and unnatural movements that are telltale signs of deepfakes.
+                        </p>
+                    </div>
+                                        
+                    <div class="bg-gray-800/50 p-6 rounded-lg feature-card">
+                        <div class="flex justify-center mb-4">
+                            <div class="gif-container">
+                                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMWF5ZzY4dHZ1bTd6cXh0dG5rZXFrc2V6cHk0cG5jbzZ3a3BqZnB4eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6Zt481isNVuQI1l6/giphy.gif" alt="Spectral Analysis">
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white text-center mb-3">Spectral Analysis</h3>
+                        <p class="text-gray-400 text-center">
+                            We analyze the video's frequency spectrum for inconsistencies that indicate manipulation or generation artifacts.
+                        </p>
+                    </div>
+                                        
+                    <div class="bg-gray-800/50 p-6 rounded-lg feature-card">
+                        <div class="flex justify-center mb-4">
+                            <div class="gif-container">
+                                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3N5a2NvZ2p4YzBzYjY0eXQ4dXl6bGZxYzJ0dHZvb3d0Z3l3dGZ5dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0xezQGU8x2gWnOj6/giphy.gif" alt="Ensemble Verification">
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white text-center mb-3">Ensemble Verification</h3>
+                        <p class="text-gray-400 text-center">
+                            Multiple specialized models vote on authenticity, with our proprietary algorithm combining their insights.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+                
+        <!-- Analytics Dashboard -->
+        <section class="mb-20">
+            <div class="terminal p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-8 text-center hacker-text">
+                    Deepfake Detection Analytics
+                </h2>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                            <i class="fas fa-chart-pie mr-2 text-cyan-400"></i> Detection Accuracy
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="accuracyChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                            <i class="fas fa-wave-square mr-2 text-indigo-400"></i> Performance Metrics
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                            <i class="fas fa-bug mr-2 text-red-400"></i> Threat Analysis
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="threatChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                            <i class="fas fa-clock mr-2 text-yellow-400"></i> Response Times
+                        </h3>
+                        <div class="chart-container">
+                            <canvas id="responseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                
+        <!-- Tech Stack -->
+        <section class="mb-20">
+            <div class="terminal p-8 rounded-lg">
+                <h2 class="text-3xl font-bold text-white mb-8 text-center hacker-text">
+                    Technology Stack
+                </h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="tech-badge">
+                        <i class="fab fa-python text-2xl text-blue-400 mb-2"></i>
+                        <p class="font-medium">Python</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-brain text-2xl text-indigo-400 mb-2"></i>
+                        <p class="font-medium">TensorFlow</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-project-diagram text-2xl text-purple-400 mb-2"></i>
+                        <p class="font-medium">Neural Nets</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-eye text-2xl text-cyan-400 mb-2"></i>
+                        <p class="font-medium">Computer Vision</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-cloud text-2xl text-blue-300 mb-2"></i>
+                        <p class="font-medium">Cloud AI</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-shield-alt text-2xl text-green-400 mb-2"></i>
+                        <p class="font-medium">Encryption</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-bolt text-2xl text-yellow-400 mb-2"></i>
+                        <p class="font-medium">Real-time</p>
+                    </div>
+                    <div class="tech-badge">
+                        <i class="fas fa-dna text-2xl text-red-400 mb-2"></i>
+                        <p class="font-medium">GAN Analysis</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/90 backdrop-blur-md border-t border-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="fas fa-ghost mr-2 text-cyan-400"></i> GHOST
+                    </h3>
+                    <p class="text-gray-400 text-sm">
+                        Advanced AI-driven identity verification protecting against deepfakes and synthetic media.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Home</a></li>
+                        <li><a href="index.html#features" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Features</a></li>
+                        <li><a href="index.html#tech" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Technology</a></li>
+                        <li><a href="index.html#demo" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Demo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">API Reference</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Security</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    © 2023 GHOST Security. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('button[aria-controls="mobile-menu"]');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+        const body = document.body;
+
+        const themes = ['dark-mode', 'light-mode', 'default-mode'];
+        const themeNames = ['Dark', 'Light', 'Default'];
+        let currentThemeIndex = 0;
+
+        function setTheme(index) {
+            // Remove all theme classes
+            body.classList.remove(...themes);
+                        
+            // Add the selected theme class
+            body.classList.add(themes[index]);
+                        
+            // Update button text
+            const themeName = themeNames[index];
+            const iconClass = index === 0 ? 'fa-moon' : index === 1 ? 'fa-sun' : 'fa-adjust';
+                        
+            if (themeToggle) {
+                themeToggle.innerHTML = `<i class="fas ${iconClass} mr-1"></i> ${themeName}`;
+            }
+                        
+            if (themeToggleMobile) {
+                themeToggleMobile.innerHTML = `<i class="fas ${iconClass} mr-1"></i> ${themeName}`;
+            }
+                        
+            // Update current theme index
+            currentThemeIndex = index;
+        }
+
+        function cycleTheme() {
+            const nextThemeIndex = (currentThemeIndex + 1) % themes.length;
+            setTheme(nextThemeIndex);
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', cycleTheme);
+        }
+
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', cycleTheme);
+        }
+
+        // Initialize theme
+        setTheme(0);
+
+        // Cursor trail effect
+        const cursorTrail = document.getElementById('cursor-trail');
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+        const speed = 0.2;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursorTrail() {
+            const dx = mouseX - trailX;
+            const dy = mouseY - trailY;
+                        
+            trailX += dx * speed;
+            trailY += dy * speed;
+                        
+            cursorTrail.style.left = trailX + 'px';
+            cursorTrail.style.top = trailY + 'px';
+                        
+            requestAnimationFrame(animateCursorTrail);
+        }
+
+        animateCursorTrail();
+
+        // Video handling
+        const videoInput = document.getElementById('videoInput');
+        const videoPreview = document.getElementById('videoPreview');
+        const videoPlaceholder = document.getElementById('videoPlaceholder');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const recordBtn = document.getElementById('recordBtn');
+        const recordingControls = document.getElementById('recordingControls');
+        const startRecording = document.getElementById('startRecording');
+        const stopRecording = document.getElementById('stopRecording');
+        const cancelRecording = document.getElementById('cancelRecording');
+        const recordingTime = document.getElementById('recordingTime');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const statusText = document.getElementById('statusText');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const progressBar = document.getElementById('progressBar');
+        const deepfakeScore = document.getElementById('deepfakeScore');
+        const confidenceScore = document.getElementById('confidenceScore');
+        const detectionDetails = document.getElementById('detectionDetails');
+        const indicatorsList = document.getElementById('indicatorsList');
+        const recordingIndicator = document.getElementById('recordingIndicator');
+
+        let mediaRecorder;
+        let recordedChunks = [];
+        let recordingStartTime;
+        let recordingInterval;
+        let currentVideoBlob = null;
+        let screenStream = null;
+
+        // Initialize charts
+        function initCharts() {
+            // Accuracy Chart
+            const accuracyCtx = document.getElementById('accuracyChart').getContext('2d');
+            new Chart(accuracyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                    datasets: [{
+                        label: 'Detection Accuracy',
+                        data: [92, 94, 96, 95, 97, 98, 98.7],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 90,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Precision', 'Recall', 'Speed', 'Accuracy', 'Robustness'],
+                    datasets: [{
+                        label: 'Performance Metrics',
+                        data: [97, 96, 89, 98, 93],
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: '#6366f1',
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#9ca3af'
+                            },
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Threat Analysis Chart
+            const threatCtx = document.getElementById('threatChart').getContext('2d');
+            new Chart(threatCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Face Swap', 'Lip Sync', 'Puppeteering', 'Full Synthesis'],
+                    datasets: [{
+                        label: 'Detection Rate',
+                        data: [97, 95, 91, 88],
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(6, 182, 212, 0.7)',
+                            'rgba(16, 185, 129, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 80,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Response Times Chart
+            const responseCtx = document.getElementById('responseChart').getContext('2d');
+            new Chart(responseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['<1 sec', '1-3 sec', '3-5 sec', '>5 sec'],
+                    datasets: [{
+                        data: [65, 25, 7, 3],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(6, 182, 212, 0.7)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Upload video handler
+        uploadBtn.addEventListener('click', () => {
+            videoInput.click();
+        });
+
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const videoURL = URL.createObjectURL(file);
+                currentVideoBlob = file;
+                                
+                videoPreview.src = videoURL;
+                videoPreview.classList.remove('hidden');
+                videoPlaceholder.classList.add('hidden');
+                                
+                analyzeBtn.classList.remove('hidden');
+                statusText.textContent = 'READY';
+                statusText.className = 'bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded';
+                                
+                // Hide results if they were shown before
+                resultsContainer.classList.add('hidden');
+            }
+        });
+
+        // Record screen handler
+        recordBtn.addEventListener('click', () => {
+            recordingControls.classList.remove('hidden');
+            recordBtn.disabled = true;
+            uploadBtn.disabled = true;
+        });
+
+        cancelRecording.addEventListener('click', () => {
+            recordingControls.classList.add('hidden');
+            recordBtn.disabled = false;
+            uploadBtn.disabled = false;
+                        
+            // Stop any ongoing recording
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                clearInterval(recordingInterval);
+            }
+                        
+            // Reset timer
+            recordingTime.textContent = '00:00';
+            
+            // Hide recording indicator
+            recordingIndicator.classList.add('hidden');
+            
+            // Stop screen stream if active
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+            }
+        });
+
+        startRecording.addEventListener('click', async () => {
+            try {
+                // Get screen capture stream
+                screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: {
+                        mediaSource: 'screen',
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        frameRate: { ideal: 30 }
+                    },
+                    audio: true
+                });
+                
+                // Show recording indicator
+                recordingIndicator.classList.remove('hidden');
+                
+                // Show screen capture in preview
+                videoPreview.srcObject = screenStream;
+                videoPreview.classList.remove('hidden');
+                videoPlaceholder.classList.add('hidden');
+                                
+                mediaRecorder = new MediaRecorder(screenStream);
+                recordedChunks = [];
+                                
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+                                
+                mediaRecorder.onstop = () => {
+                    currentVideoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const videoURL = URL.createObjectURL(currentVideoBlob);
+                    videoPreview.src = videoURL;
+                    videoPreview.srcObject = null;
+                                        
+                    analyzeBtn.classList.remove('hidden');
+                    statusText.textContent = 'READY';
+                    statusText.className = 'bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded';
+                                        
+                    // Reset timer
+                    recordingTime.textContent = '00:00';
+                    clearInterval(recordingInterval);
+                    
+                    // Hide recording indicator
+                    recordingIndicator.classList.add('hidden');
+                    
+                    // Stop screen stream
+                    if (screenStream) {
+                        screenStream.getTracks().forEach(track => track.stop());
+                        screenStream = null;
+                    }
+                };
+                
+                // Handle when user stops sharing screen via browser controls
+                screenStream.getVideoTracks()[0].onended = () => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                        clearInterval(recordingInterval);
+                    }
+                };
+                                
+                mediaRecorder.start();
+                recordingStartTime = Date.now();
+                recordingInterval = setInterval(updateRecordingTime, 1000);
+                                
+                startRecording.disabled = true;
+                stopRecording.disabled = false;
+            } catch (err) {
+                console.error('Error accessing screen:', err);
+                alert('Could not access screen recording. Please check permissions.');
+                
+                // Reset UI
+                recordingControls.classList.add('hidden');
+                recordBtn.disabled = false;
+                uploadBtn.disabled = false;
+                recordingIndicator.classList.add('hidden');
+            }
+        });
+
+        stopRecording.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                clearInterval(recordingInterval);
+                                
+                startRecording.disabled = false;
+                stopRecording.disabled = true;
+            }
+        });
+
+        function updateRecordingTime() {
+            const seconds = Math.floor((Date.now() - recordingStartTime) / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+                        
+            recordingTime.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        // Analyze video handler
+        analyzeBtn.addEventListener('click', () => {
+            if (!currentVideoBlob) return;
+                        
+            // Show loading state
+            loadingIndicator.classList.remove('hidden');
+            resultsContainer.classList.add('hidden');
+            analyzeBtn.disabled = true;
+            statusText.textContent = 'PROCESSING';
+            statusText.className = 'bg-yellow-600 text-white text-xs px-2 py-1 rounded';
+                        
+            // Simulate analysis progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = `${progress}%`;
+                                
+                if (progress === 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(showResults, 500);
+                }
+            }, 300);
+        });
+
+        function showResults() {
+            // Hide loading and show results
+            loadingIndicator.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            analyzeBtn.disabled = false;
+            statusText.textContent = 'COMPLETE';
+            statusText.className = 'bg-green-600 text-white text-xs px-2 py-1 rounded';
+                        
+            // Generate random results for demo (in a real app, this would come from your API)
+            const isDeepfake = Math.random() > 0.7;
+            const fakeScore = Math.floor(Math.random() * 30) + (isDeepfake ? 70 : 0);
+            const confidence = Math.floor(Math.random() * 20) + 80;
+                        
+            deepfakeScore.textContent = `${fakeScore}%`;
+            deepfakeScore.className = `text-3xl font-bold ${fakeScore > 50 ? 'text-red-500' : 'text-green-500'}`;
+                        
+            confidenceScore.textContent = `${confidence}%`;
+                        
+            if (fakeScore > 70) {
+                detectionDetails.textContent = "Our analysis detected strong indicators of synthetic manipulation in this video. Multiple neural networks identified inconsistencies in facial movements and texture patterns.";
+            } else if (fakeScore > 40) {
+                detectionDetails.textContent = "This video shows some signs of potential manipulation, but the evidence is inconclusive. We recommend additional verification methods.";
+            } else {
+                detectionDetails.textContent = "No significant signs of manipulation detected. This video appears to be authentic based on our analysis.";
+            }
+                        
+            // Generate indicators
+            indicatorsList.innerHTML = '';
+            const indicators = [
+                { name: "Facial Micro-Expressions", value: Math.floor(Math.random() * 100), threshold: 30 },
+                { name: "Eye Blinking Patterns", value: Math.floor(Math.random() * 100), threshold: 25 },
+                { name: "Texture Inconsistencies", value: Math.floor(Math.random() * 100), threshold: 40 },
+                { name: "Audio-Visual Sync", value: Math.floor(Math.random() * 100), threshold: 20 },
+                { name: "Spectral Artifacts", value: Math.floor(Math.random() * 100), threshold: 35 }
+            ];
+                        
+            indicators.forEach(indicator => {
+                const indicatorItem = document.createElement('div');
+                indicatorItem.className = 'bg-gray-900/50 p-3 rounded-lg fade-in';
+                                
+                const indicatorHeader = document.createElement('div');
+                indicatorHeader.className = 'flex justify-between items-center mb-1';
+                                
+                const indicatorName = document.createElement('span');
+                indicatorName.className = 'text-gray-300 text-sm';
+                indicatorName.textContent = indicator.name;
+                                
+                const indicatorValue = document.createElement('span');
+                indicatorValue.className = `text-sm font-medium ${indicator.value > indicator.threshold ? 'text-red-400' : 'text-green-400'}`;
+                indicatorValue.textContent = `${indicator.value}%`;
+                                
+                indicatorHeader.appendChild(indicatorName);
+                indicatorHeader.appendChild(indicatorValue);
+                                
+                const progressContainer = document.createElement('div');
+                progressContainer.className = 'w-full bg-gray-800 rounded-full h-1.5';
+                                
+                const progressBar = document.createElement('div');
+                progressBar.className = `h-1.5 rounded-full ${indicator.value > indicator.threshold ? 'bg-red-500' : 'bg-green-500'}`;
+                progressBar.style.width = `${indicator.value}%`;
+                                
+                progressContainer.appendChild(progressBar);
+                indicatorItem.appendChild(indicatorHeader);
+                indicatorItem.appendChild(progressContainer);
+                                
+                indicatorsList.appendChild(indicatorItem);
+            });
+
+            // Create charts
+            createAnalysisCharts(fakeScore, indicators);
+        }
+
+        function createAnalysisCharts(fakeScore, indicators) {
+            // Destroy existing charts if they exist
+            if (window.barChart) window.barChart.destroy();
+            if (window.pieChart) window.pieChart.destroy();
+
+            // Bar chart for indicators
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            window.barChart = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: indicators.map(i => i.name),
+                    datasets: [{
+                        label: 'Anomaly Score',
+                        data: indicators.map(i => i.value),
+                        backgroundColor: indicators.map(i => i.value > i.threshold ? 'rgba(239, 68, 68, 0.7)' : 'rgba(16, 185, 129, 0.7)'),
+                        borderColor: indicators.map(i => i.value > i.threshold ? 'rgb(239, 68, 68)' : 'rgb(16, 185, 129)'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(156, 163, 175, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af',
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Pie chart for probability
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            window.pieChart = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Deepfake', 'Authentic'],
+                    datasets: [{
+                        data: [fakeScore, 100 - fakeScore],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(16, 185, 129, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(239, 68, 68)',
+                            'rgb(16, 185, 129)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize analytics charts
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+        });
+    </script>
+</body>
+</html>

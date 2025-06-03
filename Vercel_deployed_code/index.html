@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST - AI-Driven Identity Shield</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --text-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .hacker-text {
+            font-family: 'Montserrat', sans-serif;
+            text-shadow: 0 0 5px var(--accent-green);
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            10% { clip: rect(112px, 9999px, 76px, 0); }
+            20% { clip: rect(85px, 9999px, 77px, 0); }
+            30% { clip: rect(27px, 9999px, 97px, 0); }
+            40% { clip: rect(64px, 9999px, 98px, 0); }
+            50% { clip: rect(61px, 9999px, 85px, 0); }
+            60% { clip: rect(99px, 9999px, 114px, 0); }
+            70% { clip: rect(34px, 9999px, 115px, 0); }
+            80% { clip: rect(98px, 9999px, 129px, 0); }
+            90% { clip: rect(43px, 9999px, 96px, 0); }
+            100% { clip: rect(82px, 9999px, 64px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            10% { clip: rect(66px, 9999px, 72px, 0); }
+            20% { clip: rect(112px, 9999px, 59px, 0); }
+            30% { clip: rect(91px, 9999px, 29px, 0); }
+            40% { clip: rect(20px, 9999px, 28px, 0); }
+            50% { clip: rect(50px, 9999px, 69px, 0); }
+            60% { clip: rect(78px, 9999px, 40px, 0); }
+            70% { clip: rect(102px, 9999px, 68px, 0); }
+            80% { clip: rect(105px, 9999px, 84px, 0); }
+            90% { clip: rect(15px, 9999px, 100px, 0); }
+            100% { clip: rect(64px, 9999px, 44px, 0); }
+        }
+
+        .terminal {
+            background-color: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--accent-green);
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff00c1, #9600ff, #4900ff, #00b8d4, #00ff9d);
+            background-size: 200% 200%;
+            animation: gradient 5s ease infinite;
+            border-radius: 5px 5px 0 0;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .code-line {
+            font-family: 'Courier New', monospace;
+            color: var(--accent-green);
+            line-height: 1.5;
+        }
+
+        .tech-scroll {
+            animation: scroll 30s linear infinite;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .btn-hover-effect-1:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-hover-effect-2:hover {
+            transform: skewX(-10deg);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-hover-effect-3:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-hover-effect-4:hover {
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+
+        .wave {
+            position: relative;
+        }
+
+        .wave::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+            animation: wave 3s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--accent-purple);
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            opacity: 0.7;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Light mode styles */
+        body.light-mode {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        body.light-mode .terminal {
+            background-color: rgba(248, 250, 252, 0.9);
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+
+        body.light-mode .code-line {
+            color: #3b82f6;
+        }
+
+        /* Default mode styles */
+        body.default-mode {
+            background-color: #020617;
+            color: #e2e8f0;
+        }
+
+        body.default-mode .terminal {
+            background-color: rgba(2, 6, 23, 0.9);
+            border-color: #8b5cf6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+        }
+
+        body.default-mode .code-line {
+            color: #8b5cf6;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <!-- Cursor Trail -->
+    <div id="cursor-trail"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-gray-900/90 backdrop-blur-md fixed w-full z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <span class="text-2xl font-bold hacker-text text-green-400">GHOST</span>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#home" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Home</a>
+                            <a href="#features" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Features</a>
+                            <a href="#tech" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Tech Stack</a>
+                            <a href="#about" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">About</a>
+                            <a href="#demo" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Demo</a>
+                            <a href="#contact" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-800/50">Contact</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6 space-x-4">
+                        <div class="relative">
+                            <button id="theme-toggle" class="bg-gray-800 text-gray-300 hover:text-white px-3 py-1 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-700/50 flex items-center">
+                                <i class="fas fa-moon mr-1"></i> Dark
+                            </button>
+                        </div>
+                        <a href="login.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-1">
+                            <i class="fas fa-user-plus mr-1"></i> Sign Up
+                        </a>
+                        <a href="login.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-2">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Login
+                        </a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-gray-900 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#features" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Features</a>
+                <a href="#tech" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Tech Stack</a>
+                <a href="#about" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#demo" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Demo</a>
+                <a href="#contact" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+            <div class="pt-4 pb-3 border-t border-gray-700">
+                <div class="flex items-center px-5 space-x-4">
+                    <button id="theme-toggle-mobile" class="bg-gray-800 text-gray-300 hover:text-white px-3 py-1 rounded-md text-sm font-medium transition-all duration-300 hover:bg-gray-700/50 flex items-center">
+                        <i class="fas fa-moon mr-1"></i> Dark
+                    </button>
+                    <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300">
+                        <i class="fas fa-user-plus mr-1"></i> Sign Up
+                    </a>
+                    <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1 rounded-md text-sm font-medium transition-all duration-300">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-green-900/20"></div>
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=2232&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+            <div class="absolute inset-0 bg-grid-slate-900/[0.04] [mask-image:linear-gradient(0deg,rgba(255,255,255,0.1),rgba(255,255,255,0.5))]"></div>
+        </div>
+        <div class="relative z-10">
+            <div class="text-center">
+                <h1 class="text-3xl md:text-5xl font-bold mb-6 hacker-text glitch" data-text="GHOST : Guardian for Harmful Online Scam Tracing">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-green-400">GHOST : Guardian for Harmful Online Scam Tracing</span>
+                </h1>
+                <h2 class="text-xl md:text-3xl font-semibold mb-8 text-gray-300">
+                    AI-Driven Identity Shield Against Deepfakes & Voice Clones
+                </h2>
+                <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10">
+                    Real-time defense system that detects and prevents identity fraud using advanced AI algorithms.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#demo" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 btn-hover-effect-1 flex items-center justify-center">
+                        <i class="fas fa-play-circle mr-2"></i> Live Demo
+                    </a>
+                    <a href="#features" class="bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-900/30 hover:text-white px-8 py-3 rounded-lg text-lg font-semibold transition-all duration-300 btn-hover-effect-2 flex items-center justify-center">
+                        <i class="fas fa-shield-alt mr-2"></i> Explore Features
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-gray-900/50 backdrop-blur-sm border-t border-b border-gray-800">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 hacker-text">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">Core Features</span>
+            </h2>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                Advanced protection against the latest identity fraud techniques
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <!-- Feature 1 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+                <div class="flex items-start mb-4">
+                    <div class="bg-blue-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-camera text-blue-400 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Real-Time Deepfake Detection</h3>
+                        <p class="text-gray-400">Detects manipulated facial images and videos in real-time using advanced neural networks.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=2349&auto=format&fit=crop" alt="Deepfake Detection" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <a href="deepfake-demo.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-1 flex items-center justify-center">
+                        <i class="fas fa-eye mr-2"></i> Try Live Detection
+                    </a>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
+                <div class="flex items-start mb-4">
+                    <div class="bg-purple-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-microphone text-purple-400 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Voice Clone Protection</h3>
+                        <p class="text-gray-400">Identifies synthetic voice clones with 98% accuracy using spectral analysis and AI.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2370&auto=format&fit=crop" alt="Voice Analysis" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <a href="voice-demo.html" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-2 flex items-center justify-center">
+                        <i class="fas fa-headphones mr-2"></i> Test Voice Analysis
+                    </a>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300">
+                <div class="flex items-start mb-4">
+                    <div class="bg-green-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-phone-alt text-green-400 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Voice-Back OTP</h3>
+                        <p class="text-gray-400">Secure authentication with spoken one-time passwords that verify live human speech.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?q=80&w=2370&auto=format&fit=crop" alt="Voice OTP" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <a href="otp-demo.html" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-3 flex items-center justify-center">
+                        <i class="fas fa-unlock-alt mr-2"></i> Demo OTP Flow
+                    </a>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300">
+                <div class="flex items-start mb-4">
+                    <div class="bg-red-900/30 p-3 rounded-lg mr-4">
+                        <i class="fas fa-shield-alt text-red-400 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-2">Fraud Scoring Engine</h3>
+                        <p class="text-gray-400">Comprehensive risk assessment combining multiple verification factors into a single score.</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <img src="https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?q=80&w=2370&auto=format&fit=crop" alt="Fraud Detection" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <a href="fraud-demo.html" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-all duration-300 btn-hover-effect-4 flex items-center justify-center">
+                        <i class="fas fa-chart-line mr-2"></i> View Scoring Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 hacker-text">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Technology Stack</span>
+            </h2>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                Cutting-edge technologies powering our security solutions
+            </p>
+        </div>
+
+        <div class="terminal p-6 rounded-lg mb-12">
+            <div class="overflow-hidden">
+                <div class="tech-scroll">
+                    <div class="inline-flex items-center space-x-16 px-4">
+                        <!-- Tech Items -->
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-html5 text-5xl text-orange-500 mb-2"></i>
+                            <span class="text-gray-300">HTML5</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-css3-alt text-5xl text-blue-500 mb-2"></i>
+                            <span class="text-gray-300">CSS3</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-js text-5xl text-yellow-400 mb-2"></i>
+                            <span class="text-gray-300">JavaScript</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-python text-5xl text-blue-400 mb-2"></i>
+                            <span class="text-gray-300">Python</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg" alt="Scikit-learn" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">Scikit-learn</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Tensorflow_logo.svg" alt="TensorFlow" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">TensorFlow</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/PyTorch_logo_icon.svg" alt="PyTorch" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">PyTorch</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/OpenCV_Logo_with_text_svg_version.svg" alt="OpenCV" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">OpenCV</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Librosa_logo.png" alt="Librosa" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">Librosa</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Pytorch-geometric-text.png" alt="TorchAudio" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">TorchAudio</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Xception.png" alt="XceptionNet" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">XceptionNet</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/ECAPA_TDNN.png" alt="ECAPA-TDNN" class="h-12 w-12 mb-2">
+                            <span class="text-gray-300">ECAPA-TDNN</span>
+                        </div>
+                        <!-- Repeat items to create infinite loop -->
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-html5 text-5xl text-orange-500 mb-2"></i>
+                            <span class="text-gray-300">HTML5</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-css3-alt text-5xl text-blue-500 mb-2"></i>
+                            <span class="text-gray-300">CSS3</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-js text-5xl text-yellow-400 mb-2"></i>
+                            <span class="text-gray-300">JavaScript</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <i class="fab fa-python text-5xl text-blue-400 mb-2"></i>
+                            <span class="text-gray-300">Python</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="terminal p-6 rounded-lg">
+                <h3 class="text-xl font-bold text-white mb-4">Frontend</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">React.js with Hooks</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">Tailwind CSS</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">WebRTC for real-time</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="terminal p-6 rounded-lg">
+                <h3 class="text-xl font-bold text-white mb-4">Backend</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">Django REST Framework</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">Celery for async tasks</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">Redis caching</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="terminal p-6 rounded-lg">
+                <h3 class="text-xl font-bold text-white mb-4">AI/ML</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">TensorFlow for deepfake</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">PyTorch for voice</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="text-gray-300">Custom ensemble models</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-gray-900/50 backdrop-blur-sm border-t border-b border-gray-800">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 hacker-text">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">About GHOST</span>
+            </h2>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                Our mission to secure digital identities in an era of synthetic media
+            </p>
+        </div>
+
+        <div class="terminal p-6 rounded-lg mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-4">The Challenge</h3>
+                    <p class="text-gray-400 mb-6">
+                        In today's digital landscape, synthetic media (deepfakes and voice clones) pose an unprecedented threat to identity verification systems. Traditional methods are increasingly vulnerable to these sophisticated attacks.
+                    </p>
+                    <div class="bg-gray-800/50 p-4 rounded-lg mb-6">
+                        <div class="flex items-center mb-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                            <h4 class="font-semibold text-white">Problem Statement</h4>
+                        </div>
+                        <p class="text-gray-400">
+                            Current identity verification systems fail to detect AI-generated synthetic media, leading to increased fraud and security breaches.
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Our Solution</h3>
+                    <p class="text-gray-400 mb-6">
+                        GHOST combines multiple AI models to detect subtle artifacts in both visual and auditory media that indicate synthetic manipulation.
+                    </p>
+                    <div class="bg-gray-800/50 p-4 rounded-lg">
+                        <div class="flex items-center mb-2">
+                            <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                            <h4 class="font-semibold text-white">Innovation</h4>
+                        </div>
+                        <p class="text-gray-400">
+                            Our multi-modal approach analyzes both facial micro-expressions and voice spectral patterns simultaneously for unprecedented accuracy.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mb-12">
+            <h3 class="text-2xl md:text-3xl font-bold mb-6 hacker-text">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Meet The Team</span>
+            </h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- Team Member 1 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <img src="Aayush.png" alt="Team Member" class="w-32 h-32 rounded-full object-cover border-2 border-blue-500">
+                        <div class="absolute -bottom-2 -right-2 bg-blue-600 rounded-full p-1">
+                            <i class="fas fa-laptop-code text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold text-white text-center mb-1">Aayush Rathour</h4>
+                <p class="text-blue-400 text-center mb-3"></p>
+                <p class="text-gray-400 text-center text-sm"></p>
+            </div>
+
+            <!-- Team Member 2 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <img src="Harsh.jpg" alt="Team Member" class="w-32 h-32 rounded-full object-cover border-2 border-purple-500">
+                        <div class="absolute -bottom-2 -right-2 bg-purple-600 rounded-full p-1">
+                            <i class="fas fa-microphone-alt text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold text-white text-center mb-1">Harshvardhan Thakur</h4>
+                <p class="text-purple-400 text-center mb-3"></p>
+                <p class="text-gray-400 text-center text-sm"></p>
+            </div>
+
+            <!-- Team Member 3 -->
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <img src="Vanshika.jpg" alt="Team Member" class="w-32 h-32 rounded-full object-cover border-2 border-green-500">
+                        <div class="absolute -bottom-2 -right-2 bg-green-600 rounded-full p-1">
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold text-white text-center mb-1">Vanshika Verma</h4>
+                <p class="text-green-400 text-center mb-3"></p>
+                <p class="text-gray-400 text-center text-sm"></p>
+            </div>
+            <!-- Team Member 4 
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <img src="Saumya.jpg" alt="Team Member" class="w-32 h-32 rounded-full object-cover border-2 border-green-500">
+                        <div class="absolute -bottom-2 -right-2 bg-green-600 rounded-full p-1">
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold text-white text-center mb-1">Soumya Atmapujya</h4>
+                <p class="text-green-400 text-center mb-3"></p>
+                <p class="text-gray-400 text-center text-sm"></p>
+            </div> -->
+
+            <!-- Team Member 5 
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <img src="Golu.jpg" alt="Team Member" class="w-32 h-32 rounded-full object-cover border-2 border-red-500">
+                        <div class="absolute -bottom-2 -right-2 bg-red-600 rounded-full p-1">
+                            <i class="fas fa-code text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-bold text-white text-center mb-1">Golu Kumar Parit</h4>
+                <p class="text-red-400 text-center mb-3"></p>
+                <p class="text-gray-400 text-center text-sm"></p>
+            </div>
+        </div> -->
+
+            <!-- Team Member 6 
+            <div class="terminal p-6 rounded-lg hover:shadow-lg hover:shadow-yellow-500/20 transition-all duration-300">
+                <div class="flex justify-center mb-4">
+                    <div class="relative">
+                        <img src="Anshika.jpg" alt="Team Member" class="w-32 h-32 rounded-full object-cover border-2 border-yellow-500">
+                        <div class="absolute -bottom-2 -right-2 bg-yellow-600 rounded-full p-1">
+                            <i class="fas fa-users text-white text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-xl font-bold text-white text-center mb-1">Anshika Singh</h4>
+                <p class="text-yellow-400 text-center mb-3"></p>
+                <p class="text-gray-400 text-center text-sm"></p>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 hacker-text">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">Interactive Demo</span>
+            </h2>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                Experience GHOST's capabilities with our live demonstration
+            </p>
+        </div>
+
+        <div class="terminal p-8 rounded-lg mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Deepfake Detection Demo</h3>
+                    <div class="relative w-full h-64 bg-gray-800 rounded-lg mb-6 overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="text-center">
+                                <i class="fas fa-camera text-4xl text-gray-600 mb-2"></i>
+                                <p class="text-gray-500">Live camera feed will appear here</p>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white font-medium">Detection Status:</span>
+                                <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">READY</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="bg-gray-800/50 p-3 rounded-lg text-center">
+                            <p class="text-gray-400 text-sm">Liveness Score</p>
+                            <p class="text-green-400 font-bold text-xl">0.92</p>
+                        </div>
+                        <div class="bg-gray-800/50 p-3 rounded-lg text-center">
+                            <p class="text-gray-400 text-sm">Manipulation</p>
+                            <p class="text-red-400 font-bold text-xl">0.05</p>
+                        </div>
+                        <div class="bg-gray-800/50 p-3 rounded-lg text-center">
+                            <p class="text-gray-400 text-sm">Frame Rate</p>
+                            <p class="text-blue-400 font-bold text-xl">30 FPS</p>
+                        </div>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-lg font-medium transition-all duration-300 btn-hover-effect-1">
+                        <i class="fas fa-play mr-2"></i> Start Detection
+                    </button>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Voice Analysis Demo</h3>
+                    <div class="bg-gray-800/50 rounded-lg p-4 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-white font-medium">Voice Sample Analysis</h4>
+                            <div class="flex space-x-2">
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-full">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-full">
+                                    <i class="fas fa-upload"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="h-32 bg-black rounded-lg mb-4 relative overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-wave-square text-4xl text-gray-600 mb-2"></i>
+                                    <p class="text-gray-500">Audio waveform will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-800 p-3 rounded-lg">
+                                <p class="text-gray-400 text-sm mb-1">Spectral Features</p>
+                                <div class="h-2 bg-gray-700 rounded-full mb-1">
+                                    <div class="h-2 bg-purple-500 rounded-full" style="width: 75%"></div>
+                                </div>
+                                <div class="h-2 bg-gray-700 rounded-full mb-1">
+                                    <div class="h-2 bg-purple-500 rounded-full" style="width: 62%"></div>
+                                </div>
+                                <div class="h-2 bg-gray-700 rounded-full">
+                                    <div class="h-2 bg-purple-500 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-lg">
+                                <p class="text-gray-400 text-sm">Synthetic Probability</p>
+                                <p class="text-2xl font-bold text-purple-400 mt-1">12%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-lg p-4">
+                        <h4 class="text-white font-medium mb-3">Try Sample Recordings</h4>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white py-2 rounded text-xs transition-all duration-300">
+                                <i class="fas fa-user mr-1"></i> Real
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white py-2 rounded text-xs transition-all duration-300">
+                                <i class="fas fa-robot mr-1"></i> AI Clone
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white py-2 rounded text-xs transition-all duration-300">
+                                <i class="fas fa-random mr-1"></i> Mixed
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal p-6 rounded-lg">
+            <h3 class="text-2xl font-bold text-white mb-6 text-center">How It Works</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-gray-800/50 p-6 rounded-lg">
+                    <div class="flex justify-center mb-4">
+                        <div class="bg-blue-900/30 p-4 rounded-full">
+                            <i class="fas fa-camera text-3xl text-blue-400"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-bold text-white text-center mb-3">1. Capture Media</h4>
+                    <p class="text-gray-400 text-center">
+                        User provides live video and audio samples through secure channels
+                    </p>
+                </div>
+                <div class="bg-gray-800/50 p-6 rounded-lg">
+                    <div class="flex justify-center mb-4">
+                        <div class="bg-purple-900/30 p-4 rounded-full">
+                            <i class="fas fa-brain text-3xl text-purple-400"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-bold text-white text-center mb-3">2. AI Analysis</h4>
+                    <p class="text-gray-400 text-center">
+                        Multiple neural networks analyze media for signs of manipulation
+                    </p>
+                </div>
+                <div class="bg-gray-800/50 p-6 rounded-lg">
+                    <div class="flex justify-center mb-4">
+                        <div class="bg-green-900/30 p-4 rounded-full">
+                            <i class="fas fa-shield-alt text-3xl text-green-400"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-bold text-white text-center mb-3">3. Verification</h4>
+                    <p class="text-gray-400 text-center">
+                        System returns liveness score and manipulation probability
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-gray-900/50 backdrop-blur-sm border-t border-b border-gray-800">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 hacker-text">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">Contact Us</span>
+            </h2>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+                Get in touch with our security experts
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div class="terminal p-8 rounded-lg">
+                <h3 class="text-2xl font-bold text-white mb-6">Send a Message</h3>
+                <form>
+                    <div class="mb-6">
+                        <label for="name" class="block text-gray-400 text-sm font-medium mb-2">Name</label>
+                        <input type="text" id="name" class="bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Your name">
+                    </div>
+                    <div class="mb-6">
+                        <label for="email" class="block text-gray-400 text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="email" class="bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="your.email@example.com">
+                    </div>
+                    <div class="mb-6">
+                        <label for="subject" class="block text-gray-400 text-sm font-medium mb-2">Subject</label>
+                        <select id="subject" class="bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3">
+                            <option selected>Select a subject</option>
+                            <option>General Inquiry</option>
+                            <option>Technical Support</option>
+                            <option>Business Partnership</option>
+                            <option>Bug Report</option>
+                            <option>Feature Request</option>
+                        </select>
+                    </div>
+                    <div class="mb-6">
+                        <label for="message" class="block text-gray-400 text-sm font-medium mb-2">Message</label>
+                        <textarea id="message" rows="4" class="bg-gray-800 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" placeholder="Your message..."></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white w-full py-3 rounded-lg font-medium transition-all duration-300 btn-hover-effect-1">
+                        <i class="fas fa-paper-plane mr-2"></i> Send Message
+                    </button>
+                </form>
+            </div>
+            <div>
+                <div class="terminal p-8 rounded-lg mb-8">
+                    <h3 class="text-2xl font-bold text-white mb-6">Live Support</h3>
+                    <div class="bg-gray-800/50 rounded-lg p-6">
+                        <div class="flex items-start mb-6">
+                            <div class="bg-blue-600 rounded-full p-3 mr-4">
+                                <i class="fas fa-robot text-white text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-gray-700 rounded-lg p-4">
+                                    <p class="text-white">Hello! I'm GHOST Support Bot. How can I help you today?</p>
+                                </div>
+                                <div class="mt-3 text-xs text-gray-500">
+                                    <span>Typing...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-gray-700 rounded-full p-3 mr-4">
+                                <i class="fas fa-user text-gray-300 text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" class="bg-gray-800 border border-gray-700 text-white text-sm rounded-lg block w-full p-3" placeholder="Type your message...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="terminal p-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-white mb-6">Contact Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="bg-blue-900/30 p-3 rounded-lg mr-4">
+                                <i class="fas fa-map-marker-alt text-blue-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">123 Security Lane</p>
+                                <p class="text-gray-400">Cyber City, SC 12345</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-purple-900/30 p-3 rounded-lg mr-4">
+                                <i class="fas fa-envelope text-purple-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">support@ghostsecurity.ai</p>
+                                <p class="text-gray-400">info@ghostsecurity.ai</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="bg-green-900/30 p-3 rounded-lg mr-4">
+                                <i class="fas fa-phone-alt text-green-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-400">+1 (555) 123-4567</p>
+                                <p class="text-gray-400">24/7 Support Available</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex space-x-4">
+                        <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-all duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-all duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-all duration-300">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-gray-700 text-white p-3 rounded-full transition-all duration-300">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/90 backdrop-blur-md border-t border-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">GHOST</h3>
+                    <p class="text-gray-400 text-sm">
+                        Advanced AI-driven identity verification protecting against deepfakes and synthetic media.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Home</a></li>
+                        <li><a href="#features" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Features</a></li>
+                        <li><a href="#tech" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Technology</a></li>
+                        <li><a href="#demo" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Demo</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">API Reference</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Security</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition-all duration-300">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    © 2023 GHOST Security. All rights reserved.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-all duration-300">
+                        <i class="fab fa-discord"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('button[aria-controls="mobile-menu"]');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+        const body = document.body;
+
+        const themes = ['dark-mode', 'light-mode', 'default-mode'];
+        const themeNames = ['Dark', 'Light', 'Default'];
+        let currentThemeIndex = 0;
+
+        function setTheme(index) {
+            // Remove all theme classes
+            body.classList.remove(...themes);
+            
+            // Add the selected theme class
+            body.classList.add(themes[index]);
+            
+            // Update button text
+            const themeName = themeNames[index];
+            const iconClass = index === 0 ? 'fa-moon' : index === 1 ? 'fa-sun' : 'fa-adjust';
+            
+            if (themeToggle) {
+                themeToggle.innerHTML = `<i class="fas ${iconClass} mr-1"></i> ${themeName}`;
+            }
+            
+            if (themeToggleMobile) {
+                themeToggleMobile.innerHTML = `<i class="fas ${iconClass} mr-1"></i> ${themeName}`;
+            }
+            
+            // Update current theme index
+            currentThemeIndex = index;
+        }
+
+        function cycleTheme() {
+            const nextThemeIndex = (currentThemeIndex + 1) % themes.length;
+            setTheme(nextThemeIndex);
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', cycleTheme);
+        }
+
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', cycleTheme);
+        }
+
+        // Initialize theme
+        setTheme(0);
+
+        // Cursor trail effect
+        const cursorTrail = document.getElementById('cursor-trail');
+        let mouseX = 0, mouseY = 0;
+        let trailX = 0, trailY = 0;
+        const speed = 0.2;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursorTrail() {
+            const dx = mouseX - trailX;
+            const dy = mouseY - trailY;
+            
+            trailX += dx * speed;
+            trailY += dy * speed;
+            
+            cursorTrail.style.left = trailX + 'px';
+            cursorTrail.style.top = trailY + 'px';
+            
+            requestAnimationFrame(animateCursorTrail);
+        }
+
+        animateCursorTrail();
+
+        // Add multiple cursor trails
+        for (let i = 0; i < 5; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.width = (10 - i * 1.5) + 'px';
+            trail.style.height = (10 - i * 1.5) + 'px';
+            trail.style.opacity = (0.7 - i * 0.1) + '';
+            trail.style.backgroundColor = i % 2 === 0 ? 'var(--accent-purple)' : 'var(--accent-blue)';
+            document.body.appendChild(trail);
+            
+            let trailX = 0, trailY = 0;
+            const delay = i * 50;
+            
+            function animate() {
+                const dx = mouseX - trailX;
+                const dy = mouseY - trailY;
+                
+                trailX += dx * (speed - i * 0.02);
+                trailY += dy * (speed - i * 0.02);
+                
+                trail.style.left = trailX + 'px';
+                trail.style.top = trailY + 'px';
+                
+                requestAnimationFrame(animate);
+            }
+            
+            setTimeout(() => {
+                animate();
+            }, delay);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+
+        // Glitch effect on random intervals
+        function randomGlitch() {
+            const glitchElements = document.querySelectorAll('.glitch');
+            glitchElements.forEach(el => {
+                if (Math.random() > 0.7) {
+                    el.classList.add('glitch-active');
+                    setTimeout(() => {
+                        el.classList.remove('glitch-active');
+                    }, 200);
+                }
+            });
+            
+            setTimeout(randomGlitch, Math.random() * 5000 + 2000);
+        }
+
+        randomGlitch();
+
+        // Terminal typing effect
+        const terminalCode = document.createElement('div');
+        terminalCode.className = 'code-line font-mono text-sm';
+        document.querySelector('.terminal').prepend(terminalCode);
+
+        const codeLines = [
+            "> Initializing GHOST security protocols...",
+            "> Loading neural network models...",
+            "> Establishing secure connection...",
+            "> Deepfake detection module: ONLINE",
+            "> Voice analysis engine: ACTIVE",
+            "> Fraud scoring system: OPERATIONAL",
+            "> All systems nominal. Ready for verification."
+        ];
+
+        let currentLine = 0;
+        let currentChar = 0;
+        let isDeleting = false;
+
+        function typeTerminal() {
+            const currentText = codeLines[currentLine].substring(0, currentChar);
+            terminalCode.textContent = currentText;
+            
+            if (!isDeleting) {
+                currentChar++;
+                
+                if (currentChar === codeLines[currentLine].length + 1) {
+                    isDeleting = true;
+                    setTimeout(typeTerminal, 2000);
+                    return;
+                }
+            } else {
+                currentChar--;
+                
+                if (currentChar === 0) {
+                    isDeleting = false;
+                    currentLine = (currentLine + 1) % codeLines.length;
+                }
+            }
+            
+            setTimeout(typeTerminal, isDeleting ? 50 : Math.random() * 100 + 50);
+        }
+
+        setTimeout(typeTerminal, 1000);
+    </script>
+</body>
+</html>

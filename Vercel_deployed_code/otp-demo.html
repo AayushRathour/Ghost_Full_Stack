@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST Identity Shield - Voice-Back OTP Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --primary: #00ff9d;
+            --secondary: #00b4ff;
+            --accent: #ff00aa;
+            --dark: #0a0a0a;
+            --light: #f0f0f0;
+            --terminal: #00ff41;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        .hacker-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .terminal-text {
+            color: var(--terminal);
+            text-shadow: 0 0 5px var(--terminal);
+        }
+        
+        .neon-pulse {
+            animation: neonPulse 2s infinite alternate;
+        }
+        
+        @keyframes neonPulse {
+            from {
+                box-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary), 0 0 15px var(--primary);
+            }
+            to {
+                box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px var(--primary);
+            }
+        }
+        
+        .soundwave {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .soundwave::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, transparent 0%, var(--secondary) 100%);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.5s;
+            transform: scale(0);
+            border-radius: 50%;
+        }
+        
+        .soundwave:hover::after {
+            opacity: 0.3;
+            transform: scale(2);
+        }
+        
+        .glitch-effect {
+            position: relative;
+        }
+        
+        .glitch-effect::before, .glitch-effect::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+        }
+        
+        .glitch-effect::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--accent);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        
+        .glitch-effect::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--secondary);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(32px, 9999px, 100px, 0); }
+            20% { clip: rect(88px, 9999px, 66px, 0); }
+            40% { clip: rect(91px, 9999px, 98px, 0); }
+            60% { clip: rect(85px, 9999px, 73px, 0); }
+            80% { clip: rect(20px, 9999px, 28px, 0); }
+            100% { clip: rect(64px, 9999px, 22px, 0); }
+        }
+        
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            20% { clip: rect(25px, 9999px, 35px, 0); }
+            40% { clip: rect(79px, 9999px, 78px, 0); }
+            60% { clip: rect(92px, 9999px, 50px, 0); }
+            80% { clip: rect(10px, 9999px, 70px, 0); }
+            100% { clip: rect(60px, 9999px, 110px, 0); }
+        }
+        
+        .tech-stack-scroll {
+            animation: scrollTech 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        @keyframes scrollTech {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .voice-wave {
+            background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .voice-wave::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(0, 180, 255, 0.5), transparent);
+            animation: wave 2s linear infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .radial-chart {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+        
+        .radial-chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid transparent;
+            border-top-color: var(--primary);
+            border-right-color: var(--primary);
+            transform: rotate(45deg);
+            transition: transform 0.5s;
+        }
+        
+        .radial-chart:hover::before {
+            transform: rotate(405deg);
+        }
+        
+        .light-mode {
+            --dark: #f0f0f0;
+            --light: #0a0a0a;
+            --terminal: #007a3d;
+            background-color: var(--dark);
+            color: var(--light);
+        }
+        
+        .default-mode {
+            --dark: #121212;
+            --light: #e0e0e0;
+            --terminal: #00c853;
+            background-color: var(--dark);
+            color: var(--light);
+        }
+        
+        .matrix-fall {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,255,100,0.05) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: var(--terminal);
+            font-size: 14px;
+            opacity: 0;
+            animation: matrixFall linear;
+        }
+        
+        @keyframes matrixFall {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        .feature-card {
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 157, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .otp-display {
+            font-size: 2rem;
+            letter-spacing: 0.5rem;
+            text-shadow: 0 0 10px var(--primary);
+            animation: otpGlow 1.5s infinite alternate;
+        }
+        
+        @keyframes otpGlow {
+            from {
+                text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+            }
+            to {
+                text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 30px var(--accent);
+            }
+        }
+        
+        .verification-result {
+            transition: all 0.5s;
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .verification-result.active {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <div class="matrix-fall" id="matrixCanvas"></div>
+    
+    <!-- Theme Switcher -->
+    <div class="fixed top-4 right-4 z-50">
+        <div class="flex space-x-2">
+            <button onclick="setTheme('dark')" class="w-8 h-8 rounded-full bg-gray-900 border-2 border-green-400 hover:neon-pulse"></button>
+            <button onclick="setTheme('light')" class="w-8 h-8 rounded-full bg-gray-100 border-2 border-blue-400 hover:neon-pulse"></button>
+            <button onclick="setTheme('default')" class="w-8 h-8 rounded-full bg-gray-700 border-2 border-purple-400 hover:neon-pulse"></button>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="py-6 px-4 sm:px-6 lg:px-8 border-b border-gray-800">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-ghost text-3xl text-purple-500"></i>
+                <h1 class="text-2xl md:text-3xl font-bold hacker-font glitch-effect" data-text="GHOST IDENTITY SHIELD">
+                    <span class="terminal-text">GHOST IDENTITY SHIELD</span>
+                </h1>
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="#features" class="text-gray-400 hover:text-green-400 transition hacker-font">FEATURES</a>
+                <a href="#how-it-works" class="text-gray-400 hover:text-blue-400 transition hacker-font">TECH</a>
+                <a href="#use-cases" class="text-gray-400 hover:text-purple-400 transition hacker-font">USE CASES</a>
+                <a href="#demo" class="text-gray-400 hover:text-pink-500 transition hacker-font">DEMO</a>
+            </nav>
+            <button class="md:hidden text-gray-400 hover:text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
+        <div class="max-w-4xl mx-auto relative z-10">
+            <div class="mb-8">
+                <span class="inline-block px-3 py-1 text-xs font-semibold text-green-400 bg-green-900 bg-opacity-20 rounded-full hacker-font">
+                    🎤 SPEAK TO UNLOCK
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 hacker-font glitch-effect" data-text="VOICE-BACK OTP CHALLENGE">
+                <span class="terminal-text">VOICE-BACK OTP CHALLENGE</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                "Your voice is your password. Only the real you can answer."
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="startDemo()" class="px-8 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded-full hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 neon-pulse">
+                    <i class="fas fa-microphone"></i>
+                    <span>TRY VOICE OTP NOW</span>
+                </button>
+                <button onclick="scrollToSection('how-it-works')" class="px-8 py-3 border border-green-400 text-green-400 font-bold rounded-full hover:bg-green-900 hover:bg-opacity-20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2">
+                    <i class="fas fa-brain"></i>
+                    <span>LEARN HOW IT WORKS</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900 bg-opacity-70">
+        <div class="container mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center hacker-font terminal-text">
+                <i class="fas fa-cogs mr-2"></i> TECHNOLOGY BEHIND THE SHIELD
+            </h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 hacker-font text-green-400">
+                        <i class="fas fa-microchip mr-2"></i> How Voice-Back OTP Works
+                    </h3>
+                    
+                    <div class="space-y-8">
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-green-900 bg-opacity-30 text-green-400">
+                                    <span class="font-bold hacker-font">1</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2 text-white hacker-font">OTP Generation</h4>
+                                <p class="text-gray-300">
+                                    A unique numeric/alpha code is created by our secure backend system, valid for only one authentication attempt.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-900 bg-opacity-30 text-blue-400">
+                                    <span class="font-bold hacker-font">2</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2 text-white hacker-font">Spoken Delivery</h4>
+                                <p class="text-gray-300">
+                                    The system delivers the OTP using AI-powered Text-to-Speech (TTS) with randomized voice characteristics.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-900 bg-opacity-30 text-purple-400">
+                                    <span class="font-bold hacker-font">3</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2 text-white hacker-font">User Repeats OTP</h4>
+                                <p class="text-gray-300">
+                                    The user must repeat the code using their microphone within a limited time window.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-pink-900 bg-opacity-30 text-pink-400">
+                                    <span class="font-bold hacker-font">4</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2 text-white hacker-font">Dual Verification</h4>
+                                <p class="text-gray-300">
+                                    Speech-to-Text (STT) checks the accuracy of the spoken OTP while voice biometrics verify the speaker's identity.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 mr-4">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-900 bg-opacity-30 text-yellow-400">
+                                    <span class="font-bold hacker-font">5</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold mb-2 text-white hacker-font">Access Decision</h4>
+                                <p class="text-gray-300">
+                                    The system grants or rejects access based on both content match and voice biometric scores.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-gray-800 bg-opacity-50 rounded-xl p-6 border border-gray-700">
+                        <h3 class="text-2xl font-bold mb-6 hacker-font text-blue-400">
+                            <i class="fas fa-shield-alt mr-2"></i> Why It Matters
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-300">
+                                        <span class="font-bold text-white">Prevents recorded playback</span> - Cloned voice won't respond correctly in real time
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-300">
+                                        <span class="font-bold text-white">Adds live interaction layer</span> - To authentication that's hard to fake
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-300">
+                                        <span class="font-bold text-white">Builds trust</span> - Between user and system with voice-based verification
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-300">
+                                        <span class="font-bold text-white">Protects presence</span> - Ensures the real user is present, not just their credentials
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-check-circle text-green-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-gray-300">
+                                        <span class="font-bold text-white">Multi-dimensional security</span> - Combines what you know with who you are
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 pt-6 border-t border-gray-700">
+                            <h4 class="text-lg font-bold mb-4 text-white hacker-font">
+                                <i class="fas fa-chart-line mr-2"></i> Validation Parameters
+                            </h4>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-700 bg-opacity-30 rounded-lg p-3">
+                                    <div class="flex items-center">
+                                        <div class="radial-chart mr-3"></div>
+                                        <span class="text-sm font-bold text-green-400">Timing</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 bg-opacity-30 rounded-lg p-3">
+                                    <div class="flex items-center">
+                                        <div class="radial-chart mr-3"></div>
+                                        <span class="text-sm font-bold text-blue-400">Tone</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 bg-opacity-30 rounded-lg p-3">
+                                    <div class="flex items-center">
+                                        <div class="radial-chart mr-3"></div>
+                                        <span class="text-sm font-bold text-purple-400">Pitch</span>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-700 bg-opacity-30 rounded-lg p-3">
+                                    <div class="flex items-center">
+                                        <div class="radial-chart mr-3"></div>
+                                        <span class="text-sm font-bold text-pink-400">Correctness</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Demo Section -->
+    <section id="demo" class="py-16 px-4 sm:px-6 lg:px-8 bg-black bg-opacity-70">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center hacker-font terminal-text">
+                <i class="fas fa-laptop-code mr-2"></i> VOICE-BACK OTP DEMO
+            </h2>
+            
+            <div class="bg-gray-900 bg-opacity-70 rounded-xl p-6 sm:p-8 border border-gray-700">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold mb-2 text-white hacker-font">Try It Yourself</h3>
+                    <p class="text-gray-300 max-w-2xl mx-auto">
+                        Experience our Voice-Back OTP Challenge. The system will generate a code, speak it to you, and you'll need to repeat it back.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-800 bg-opacity-50 rounded-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-bold text-green-400 hacker-font">
+                                <i class="fas fa-key mr-2"></i> YOUR OTP CODE
+                            </h4>
+                            <button onclick="generateOTP()" class="px-3 py-1 text-xs bg-green-900 bg-opacity-30 text-green-400 rounded-full hover:bg-opacity-50 transition flex items-center">
+                                <i class="fas fa-sync-alt mr-1"></i> Generate
+                            </button>
+                        </div>
+                        
+                        <div class="bg-black bg-opacity-40 rounded-lg p-6 mb-4 text-center">
+                            <div id="otpDisplay" class="otp-display font-mono mb-4">••••••</div>
+                            <div class="flex justify-center space-x-4">
+                                <button onclick="playOTP()" class="w-12 h-12 rounded-full bg-blue-900 bg-opacity-30 flex items-center justify-center text-blue-400 hover:bg-opacity-50 transition neon-pulse soundwave">
+                                    <i class="fas fa-volume-up text-xl"></i>
+                                </button>
+                                <button onclick="replayOTP()" class="px-4 py-2 bg-purple-900 bg-opacity-30 text-purple-400 rounded-full hover:bg-opacity-50 transition flex items-center">
+                                    <i class="fas fa-redo mr-2"></i> Replay
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center text-sm text-gray-400 hacker-font">
+                            <p>Listen carefully to the spoken OTP</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 bg-opacity-50 rounded-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-bold text-blue-400 hacker-font">
+                                <i class="fas fa-microphone mr-2"></i> REPEAT THE OTP
+                            </h4>
+                            <span id="recordingStatus" class="text-xs px-2 py-1 rounded-full bg-gray-700 text-gray-300">Ready</span>
+                        </div>
+                        
+                        <div class="bg-black bg-opacity-40 rounded-lg p-6 mb-4">
+                            <div class="voice-wave mb-4" id="voiceWave"></div>
+                            <div class="flex justify-center">
+                                <button onclick="startRecording()" id="recordButton" class="px-6 py-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition flex items-center soundwave">
+                                    <i class="fas fa-microphone mr-2"></i> Hold to Speak
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button onclick="verifyOTP()" id="verifyButton" class="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition opacity-50 cursor-not-allowed" disabled>
+                                Verify Response
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="verificationResult" class="verification-result mt-8 bg-gray-800 rounded-lg overflow-hidden">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-xl font-bold text-white hacker-font">
+                                <i class="fas fa-clipboard-check mr-2"></i> VERIFICATION RESULT
+                            </h4>
+                            <span id="resultBadge" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="text-sm font-bold text-gray-400 mb-2 hacker-font">OTP MATCH</h5>
+                                <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                    <div id="contentMatchBar" class="bg-blue-500 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">0%</span>
+                                    <span id="contentMatchScore" class="text-xs font-bold">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h5 class="text-sm font-bold text-gray-400 mb-2 hacker-font">VOICE MATCH</h5>
+                                <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                    <div id="voiceMatchBar" class="bg-purple-500 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between mt-1">
+                                    <span class="text-xs text-gray-400">0%</span>
+                                    <span id="voiceMatchScore" class="text-xs font-bold">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-gray-700">
+                            <div id="resultMessage" class="text-center"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <button onclick="showOTPLogic()" class="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition flex items-center justify-center">
+                            <i class="fas fa-code mr-2"></i> View OTP Logic
+                        </button>
+                        <button onclick="showVoiceLogs()" class="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition flex items-center justify-center">
+                            <i class="fas fa-history mr-2"></i> Voice-Back Logs
+                        </button>
+                        <button onclick="learnMore()" class="px-6 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition flex items-center justify-center">
+                            <i class="fas fa-graduation-cap mr-2"></i> Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-gray-900 to-black">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 hacker-font terminal-text">
+                READY TO DEPLOY VOICE-BACK OTP?
+            </h2>
+            <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Integrate our Voice-Back OTP Challenge into your authentication flow and take your security to the next level.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button class="px-8 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded-full hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 neon-pulse">
+                    <i class="fas fa-envelope"></i>
+                    <span>REQUEST DEMO</span>
+                </button>
+                <button class="px-8 py-3 border border-green-400 text-green-400 font-bold rounded-full hover:bg-green-900 hover:bg-opacity-20 transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2">
+                    <i class="fas fa-file-alt"></i>
+                    <span>DOCUMENTATION</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 px-4 sm:px-6 lg:px-8 bg-black bg-opacity-90 border-t border-gray-800">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <i class="fas fa-ghost text-2xl text-purple-500"></i>
+                    <span class="text-xl font-bold hacker-font terminal-text">GHOST IDENTITY SHIELD</span>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-green-400 transition">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-purple-400 transition">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-red-400 transition">
+                        <i class="fab fa-youtube text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase mb-4 hacker-font">Product</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Features</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Pricing</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">API</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Integrations</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase mb-4 hacker-font">Resources</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Documentation</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Guides</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Blog</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Support</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase mb-4 hacker-font">Company</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">About</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Careers</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Privacy</a></li>
+                            <li><a href="#" class="text-gray-300 hover:text-white transition">Terms</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-gray-400 uppercase mb-4 hacker-font">Subscribe</h4>
+                        <p class="text-gray-300 mb-4 text-sm">
+                            Get the latest updates on voice authentication technology.
+                        </p>
+                        <div class="flex">
+                            <input type="email" placeholder="Your email" class="px-4 py-2 bg-gray-800 text-white rounded-l-lg focus:outline-none focus:ring-1 focus:ring-green-400 w-full">
+                            <button class="px-4 py-2 bg-green-600 text-white rounded-r-lg hover:bg-green-700 transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
+                <p>© 2023 GHOST Identity Shield. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Theme switcher
+        function setTheme(theme) {
+            document.body.classList.remove('dark-mode', 'light-mode', 'default-mode');
+            document.body.classList.add(theme + '-mode');
+            
+            // Store preference
+            localStorage.setItem('theme', theme);
+        }
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+        
+        // Matrix background effect
+        function createMatrixEffect() {
+            const canvas = document.getElementById('matrixCanvas');
+            const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const char = document.createElement('div');
+                    char.className = 'matrix-char';
+                    char.textContent = chars.charAt(Math.floor(Math.random() * chars.length));
+                    char.style.left = Math.random() * 100 + 'vw';
+                    char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    char.style.animationDelay = (Math.random() * 2) + 's';
+                    canvas.appendChild(char);
+                    
+                    // Remove character after animation completes
+                    setTimeout(() => {
+                        char.remove();
+                    }, 5000);
+                }, i * 200);
+            }
+        }
+        
+        // Run matrix effect periodically
+        setInterval(createMatrixEffect, 3000);
+        createMatrixEffect();
+        
+        // Scroll to section
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // Demo functionality
+        let currentOTP = '';
+        let recordedAudio = null;
+        
+        function generateOTP() {
+            const chars = '0123456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+            let otp = '';
+            for (let i = 0; i < 6; i++) {
+                otp += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentOTP = otp;
+            document.getElementById('otpDisplay').textContent = otp;
+            document.getElementById('verifyButton').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('verifyButton').disabled = false;
+            
+            // Reset verification result
+            document.getElementById('verificationResult').classList.remove('active');
+        }
+        
+        function playOTP() {
+            if (!currentOTP) {
+                alert('Please generate an OTP first');
+                return;
+            }
+            
+            // In a real implementation, this would use TTS API
+            alert('Playing OTP: ' + currentOTP.split('').join(' '));
+        }
+        
+        function replayOTP() {
+            if (!currentOTP) {
+                alert('Please generate an OTP first');
+                return;
+            }
+            playOTP();
+        }
+        
+        function startRecording() {
+            document.getElementById('recordingStatus').textContent = 'Recording...';
+            document.getElementById('recordingStatus').className = 'text-xs px-2 py-1 rounded-full bg-red-700 text-white';
+            document.getElementById('voiceWave').style.animation = 'wave 0.5s linear infinite';
+            
+            // In a real implementation, this would use the Web Audio API
+            recordedAudio = currentOTP; // Simulate recording
+        }
+        
+        function stopRecording() {
+            document.getElementById('recordingStatus').textContent = 'Recorded';
+            document.getElementById('recordingStatus').className = 'text-xs px-2 py-1 rounded-full bg-green-700 text-white';
+            document.getElementById('voiceWave').style.animation = 'none';
+        }
+        
+        // Set up hold-to-speak button
+        const recordButton = document.getElementById('recordButton');
+        recordButton.addEventListener('mousedown', startRecording);
+        recordButton.addEventListener('mouseup', stopRecording);
+        recordButton.addEventListener('mouseleave', stopRecording);
+        recordButton.addEventListener('touchstart', startRecording);
+        recordButton.addEventListener('touchend', stopRecording);
+        
+        function verifyOTP() {
+            if (!recordedAudio) {
+                alert('Please record your voice first');
+                return;
+            }
+            
+            // Simulate verification
+            const contentMatch = Math.floor(Math.random() * 30) + 70; // 70-100%
+            const voiceMatch = Math.floor(Math.random() * 30) + 70; // 70-100%
+            
+            document.getElementById('contentMatchBar').style.width = contentMatch + '%';
+            document.getElementById('voiceMatchBar').style.width = voiceMatch + '%';
+            document.getElementById('contentMatchScore').textContent = contentMatch + '%';
+            document.getElementById('voiceMatchScore').textContent = voiceMatch + '%';
+            
+            const resultBadge = document.getElementById('resultBadge');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            if (contentMatch > 85 && voiceMatch > 85) {
+                resultBadge.textContent = 'VERIFIED';
+                resultBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-green-900 text-green-400';
+                resultMessage.innerHTML = '<p class="text-green-400 font-bold">✅ Identity verified! Access granted.</p>';
+            } else {
+                resultBadge.textContent = 'REJECTED';
+                resultBadge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-red-900 text-red-400';
+                resultMessage.innerHTML = '<p class="text-red-400 font-bold">❌ Verification failed. Access denied.</p>';
+            }
+            
+            document.getElementById('verificationResult').classList.add('active');
+        }
+        
+        function showOTPLogic() {
+            alert('In a real implementation, this would show the OTP generation and verification logic.');
+        }
+        
+        function showVoiceLogs() {
+            alert('In a real implementation, this would display historical voice verification logs.');
+        }
+        
+        function learnMore() {
+            alert('In a real implementation, this would redirect to educational resources.');
+        }
+        
+        function startDemo() {
+            generateOTP();
+            setTimeout(playOTP, 1000);
+            scrollToSection('demo');
+        }
+        
+        function redirectToFeature(feature) {
+            alert('In a real implementation, this would redirect to the ' + feature + ' feature page.');
+        }
+        
+        // Initialize
+        generateOTP();
+    </script>
+</body>
+</html>
