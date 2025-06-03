@@ -63,7 +63,7 @@ python manage.py runserver
 ## If Login Needed Use Below Credentioals
 
 - User name - "admin"
-- Password - "admin@123"
+- Password - "admin123"
 
 
 ## Available Features
