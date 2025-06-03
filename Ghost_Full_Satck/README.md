@@ -60,6 +60,12 @@ python manage.py runserver
 - Main page: `http://localhost:8000`
 - Admin interface: `http://localhost:8000/admin`
 
+## If Login Needed Use Below Credentioals
+
+- User name - "admin"
+- Password - "admin@123"
+
+
 ## Available Features
 
 - Deepfake Detection Demo
