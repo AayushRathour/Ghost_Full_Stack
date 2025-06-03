@@ -1,0 +1,986 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST - Voice Clone Defense</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+        }
+        
+        .light-mode {
+            --primary-dark: #f8fafc;
+            --secondary-dark: #e2e8f0;
+            --accent-blue: #2563eb;
+            --accent-green: #059669;
+            --accent-red: #dc2626;
+            --text-primary: #0f172a;
+        }
+        
+        .default-mode {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .glow {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        
+        .waveform {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            height: 100px;
+            width: 100%;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .waveform::before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            animation: wave 1.5s infinite ease-in-out;
+        }
+        
+        @keyframes wave {
+            0% {
+                left: 0;
+                height: 20%;
+            }
+            50% {
+                height: 80%;
+            }
+            100% {
+                left: 100%;
+                height: 20%;
+            }
+        }
+        
+        .tech-slider {
+            animation: slide 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(31px, 9999px, 94px, 0);
+                transform: skew(0.5deg);
+            }
+            5% {
+                clip: rect(112px, 9999px, 76px, 0);
+                transform: skew(0.5deg);
+            }
+            10% {
+                clip: rect(85px, 9999px, 77px, 0);
+                transform: skew(0.5deg);
+            }
+            15% {
+                clip: rect(27px, 9999px, 97px, 0);
+                transform: skew(0.5deg);
+            }
+            20% {
+                clip: rect(64px, 9999px, 98px, 0);
+                transform: skew(0.5deg);
+            }
+            25% {
+                clip: rect(67px, 9999px, 119px, 0);
+                transform: skew(0.5deg);
+            }
+            30% {
+                clip: rect(21px, 9999px, 96px, 0);
+                transform: skew(0.5deg);
+            }
+            35% {
+                clip: rect(91px, 9999px, 98px, 0);
+                transform: skew(0.5deg);
+            }
+            40% {
+                clip: rect(83px, 9999px, 96px, 0);
+                transform: skew(0.5deg);
+            }
+            45% {
+                clip: rect(20px, 9999px, 120px, 0);
+                transform: skew(0.5deg);
+            }
+            50% {
+                clip: rect(61px, 9999px, 85px, 0);
+                transform: skew(0.5deg);
+            }
+            55% {
+                clip: rect(121px, 9999px, 110px, 0);
+                transform: skew(0.5deg);
+            }
+            60% {
+                clip: rect(101px, 9999px, 85px, 0);
+                transform: skew(0.5deg);
+            }
+            65% {
+                clip: rect(46px, 9999px, 96px, 0);
+                transform: skew(0.5deg);
+            }
+            70% {
+                clip: rect(82px, 9999px, 64px, 0);
+                transform: skew(0.5deg);
+            }
+            75% {
+                clip: rect(54px, 9999px, 111px, 0);
+                transform: skew(0.5deg);
+            }
+            80% {
+                clip: rect(75px, 9999px, 115px, 0);
+                transform: skew(0.5deg);
+            }
+            85% {
+                clip: rect(58px, 9999px, 103px, 0);
+                transform: skew(0.5deg);
+            }
+            90% {
+                clip: rect(108px, 9999px, 86px, 0);
+                transform: skew(0.5deg);
+            }
+            95% {
+                clip: rect(15px, 9999px, 75px, 0);
+                transform: skew(0.5deg);
+            }
+            100% {
+                clip: rect(66px, 9999px, 117px, 0);
+                transform: skew(0.5deg);
+            }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% {
+                clip: rect(65px, 9999px, 119px, 0);
+                transform: skew(0.5deg);
+            }
+            5% {
+                clip: rect(60px, 9999px, 101px, 0);
+                transform: skew(0.5deg);
+            }
+            10% {
+                clip: rect(107px, 9999px, 114px, 0);
+                transform: skew(0.5deg);
+            }
+            15% {
+                clip: rect(104px, 9999px, 108px, 0);
+                transform: skew(0.5deg);
+            }
+            20% {
+                clip: rect(76px, 9999px, 51px, 0);
+                transform: skew(0.5deg);
+            }
+            25% {
+                clip: rect(67px, 9999px, 62px, 0);
+                transform: skew(0.5deg);
+            }
+            30% {
+                clip: rect(117px, 9999px, 114px, 0);
+                transform: skew(0.5deg);
+            }
+            35% {
+                clip: rect(115px, 9999px, 74px, 0);
+                transform: skew(0.5deg);
+            }
+            40% {
+                clip: rect(99px, 9999px, 71px, 0);
+                transform: skew(0.5deg);
+            }
+            45% {
+                clip: rect(80px, 9999px, 107px, 0);
+                transform: skew(0.5deg);
+            }
+            50% {
+                clip: rect(95px, 9999px, 62px, 0);
+                transform: skew(0.5deg);
+            }
+            55% {
+                clip: rect(75px, 9999px, 86px, 0);
+                transform: skew(0.5deg);
+            }
+            60% {
+                clip: rect(112px, 9999px, 102px, 0);
+                transform: skew(0.5deg);
+            }
+            65% {
+                clip: rect(101px, 9999px, 115px, 0);
+                transform: skew(0.5deg);
+            }
+            70% {
+                clip: rect(114px, 9999px, 100px, 0);
+                transform: skew(0.5deg);
+            }
+            75% {
+                clip: rect(104px, 9999px, 85px, 0);
+                transform: skew(0.5deg);
+            }
+            80% {
+                clip: rect(106px, 9999px, 117px, 0);
+                transform: skew(0.5deg);
+            }
+            85% {
+                clip: rect(115px, 9999px, 101px, 0);
+                transform: skew(0.5deg);
+            }
+            90% {
+                clip: rect(57px, 9999px, 109px, 0);
+                transform: skew(0.5deg);
+            }
+            95% {
+                clip: rect(117px, 9999px, 112px, 0);
+                transform: skew(0.5deg);
+            }
+            100% {
+                clip: rect(60px, 9999px, 120px, 0);
+                transform: skew(0.5deg);
+            }
+        }
+        
+        .btn-hover-grow {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-hover-grow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        
+        .btn-hover-color-shift {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-hover-color-shift:hover {
+            background-color: var(--accent-green);
+        }
+        
+        .btn-hover-border-pulse {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-hover-border-pulse:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px var(--accent-blue);
+        }
+        
+        .btn-hover-underline {
+            position: relative;
+        }
+        
+        .btn-hover-underline::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .btn-hover-underline:hover::after {
+            width: 100%;
+        }
+        
+        .btn-hover-neon {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-hover-neon:hover {
+            box-shadow: 0 0 10px var(--accent-blue), 0 0 20px var(--accent-blue), 0 0 30px var(--accent-blue);
+        }
+        
+        .btn-hover-neon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--accent-blue), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .btn-hover-neon:hover::before {
+            opacity: 1;
+            animation: shine 1.5s infinite;
+        }
+        
+        @keyframes shine {
+            0% {
+                left: -50%;
+            }
+            100% {
+                left: 150%;
+            }
+        }
+        
+        .hacker-bg {
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="10" height="10" x="0" y="0" fill="%233b82f6" opacity="0.1"/></svg>');
+            background-size: 20px 20px;
+        }
+        
+        .terminal {
+            background-color: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--accent-blue);
+            border-radius: 5px;
+            font-family: 'Share Tech Mono', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-blue), var(--accent-green));
+            opacity: 0.3;
+        }
+        
+        .terminal-output {
+            height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            color: var(--accent-green);
+        }
+        
+        .terminal-input {
+            display: flex;
+            padding: 10px;
+            background-color: rgba(30, 41, 59, 0.9);
+        }
+        
+        .terminal-prompt {
+            color: var(--accent-blue);
+            margin-right: 10px;
+        }
+        
+        .terminal-cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+        
+        .audio-visualizer {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .audio-bar {
+            position: absolute;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(to top, var(--accent-blue), var(--accent-green));
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
+        
+        .clone-detected {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+        }
+        
+        .tech-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .tech-icon:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 5px var(--accent-blue));
+        }
+        
+        .hexagon {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="default-mode">
+    <!-- Theme Switcher -->
+    <div class="fixed top-4 right-4 z-50 flex space-x-2">
+        <button onclick="switchTheme('default')" class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-all btn-hover-grow">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button onclick="switchTheme('dark')" class="p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all btn-hover-grow">
+            <i class="fas fa-star"></i>
+        </button>
+        <button onclick="switchTheme('light')" class="p-2 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all btn-hover-grow">
+            <i class="fas fa-sun"></i>
+        </button>
+    </div>
+
+    <!-- Header -->
+    <header class="hacker-bg py-12 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'index' %}" class="flex items-center space-x-2">
+                    <i class="fas fa-ghost text-3xl text-blue-400"></i>
+                    <h1 class="text-3xl font-bold text-white">GHOST</h1>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'index' %}#features" class="text-gray-300 hover:text-white transition-all duration-300">Features</a>
+                    <a href="{% url 'index' %}#tech" class="text-gray-300 hover:text-white transition-all duration-300">Technology</a>
+                    <a href="{% url 'index' %}#about" class="text-gray-300 hover:text-white transition-all duration-300">About</a>
+                    <a href="{% url 'index' %}#demo" class="text-gray-300 hover:text-white transition-all duration-300">Demo</a>
+                    <a href="{% url 'index' %}#contact" class="text-gray-300 hover:text-white transition-all duration-300">Contact</a>
+                    <a href="{% url 'login' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300">
+                        Login / Sign Up
+                    </a>
+                </nav>
+
+                <button class="md:hidden text-white">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Overview Section -->
+    <section class="py-16 bg-gradient-to-b from-slate-900 to-slate-800">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 tech-font gradient-text">In the Age of Synthetic Speech</h2>
+                <div class="w-24 h-1 bg-blue-500 mx-auto mb-6"></div>
+                <p class="max-w-3xl mx-auto text-lg">
+                    Voice cloning tools have become powerful enough to mimic tone, pitch, and speaking style — making phone scams, audio impersonation, and digital fraud dangerously easy. GHOST defends against this with ECAPA-TDNN, a state-of-the-art voice recognition model that goes beyond words — analyzing how you speak, not just what you say.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="feature-card bg-slate-800 p-6 rounded-lg">
+                    <div class="text-blue-400 text-4xl mb-4">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">The Threat</h3>
+                    <p class="text-slate-300">
+                        AI voice cloning can replicate anyone's voice with just a few seconds of sample audio, enabling sophisticated social engineering attacks.
+                    </p>
+                </div>
+                
+                <div class="feature-card bg-slate-800 p-6 rounded-lg">
+                    <div class="text-green-400 text-4xl mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Our Defense</h3>
+                    <p class="text-slate-300">
+                        GHOST analyzes over 100 vocal characteristics that AI struggles to replicate perfectly, detecting subtle anomalies in synthetic speech.
+                    </p>
+                </div>
+                
+                <div class="feature-card bg-slate-800 p-6 rounded-lg">
+                    <div class="text-red-400 text-4xl mb-4">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">The Numbers</h3>
+                    <p class="text-slate-300">
+                        Voice fraud has increased 350% since 2020. Our system detects 99.7% of cloned voices with a false positive rate of just 0.2%.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 bg-slate-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 tech-font gradient-text">How GHOST Works</h2>
+                <div class="w-24 h-1 bg-blue-500 mx-auto mb-6"></div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center mb-16">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <div class="audio-visualizer" id="audio-visualizer">
+                        <!-- Audio bars will be generated by JavaScript -->
+                    </div>
+                    <div class="flex justify-center mt-6">
+                        <button class="pulse w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xl hover:bg-blue-600 transition-all">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 md:pl-10">
+                    <div class="bg-slate-800 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white mr-3">
+                                1
+                            </div>
+                            <h3 class="text-xl font-bold">Voice Recording</h3>
+                        </div>
+                        <p class="text-slate-300 mb-6">
+                            The user is prompted to speak a specific sentence or OTP. Our system captures high-quality audio with noise reduction.
+                        </p>
+                        
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white mr-3">
+                                2
+                            </div>
+                            <h3 class="text-xl font-bold">Feature Extraction</h3>
+                        </div>
+                        <p class="text-slate-300 mb-6">
+                            The model breaks down voice characteristics into unique patterns (voiceprint) including pitch, timbre, and speech rhythm.
+                        </p>
+                        
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white mr-3">
+                                3
+                            </div>
+                            <h3 class="text-xl font-bold">Clone Check</h3>
+                        </div>
+                        <p class="text-slate-300">
+                            Compares input with natural human traits and stored voiceprints to detect AI-generated anomalies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-robot text-red-500 mr-3"></i> Clone Detected!
+                    </h3>
+                    <div class="clone-detected p-4 bg-red-900 bg-opacity-30 rounded mb-4">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">Risk Level:</span>
+                            <span class="text-red-400 font-bold">HIGH</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="w-full bg-red-900 rounded-full h-2.5">
+                                <div class="bg-red-500 h-2.5 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300">
+                        Our system identified multiple synthetic speech markers including unnatural pitch transitions and inconsistent spectral features.
+                    </p>
+                </div>
+                
+                <div class="bg-slate-800 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-3"></i> Authentic Voice
+                    </h3>
+                    <div class="p-4 bg-green-900 bg-opacity-30 rounded mb-4">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold">Confidence Score:</span>
+                            <span class="text-green-400 font-bold">98%</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="w-full bg-green-900 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 98%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-slate-300">
+                        The voice sample matches expected human speech patterns with natural variations in pitch and consistent spectral characteristics.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Section -->
+    <section class="py-16 bg-gradient-to-b from-slate-800 to-slate-900">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 tech-font gradient-text">ECAPA-TDNN Model</h2>
+                <div class="w-24 h-1 bg-blue-500 mx-auto mb-6"></div>
+                <p class="max-w-3xl mx-auto text-lg">
+                    Our state-of-the-art voice recognition model specifically designed for speaker verification and spoof detection.
+                </p>
+            </div>
+            
+            <div class="flex flex-col md:flex-row items-center mb-16">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/1*_4v1F6zWqQj1X9QZQ9Q9Yg.png" alt="ECAPA-TDNN Architecture" class="rounded-lg shadow-xl hover:scale-105 transition-transform duration-300">
+                </div>
+                <div class="md:w-1/2 md:pl-10">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 flex items-center">
+                                <i class="fas fa-brain text-blue-500 mr-3"></i> Model Architecture
+                            </h3>
+                            <p class="text-slate-300">
+                                ECAPA-TDNN (Emphasized Channel Attention, Propagation and Aggregation in Time Delay Neural Network) enhances traditional TDNN architectures with channel- and context-dependent attention mechanisms.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 flex items-center">
+                                <i class="fas fa-database text-green-500 mr-3"></i> Training Data
+                            </h3>
+                            <p class="text-slate-300">
+                                Trained on datasets like ASVspoof, VoxCeleb, and LA-ASV with millions of voice samples including both genuine and synthetic speech.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 flex items-center">
+                                <i class="fas fa-tachometer-alt text-purple-500 mr-3"></i> Performance
+                            </h3>
+                            <p class="text-slate-300">
+                                Achieves 99.7% detection accuracy for cloned voices with a false acceptance rate of just 0.2%, outperforming traditional speaker verification systems.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800 p-6 rounded-lg">
+                <h3 class="text-xl font-bold mb-4 text-center">Key Advantages Over Traditional Models</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="flex items-start">
+                        <div class="bg-blue-500 bg-opacity-20 p-3 rounded-full mr-4">
+                            <i class="fas fa-bolt text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Channel Attention</h4>
+                            <p class="text-slate-300 text-sm">
+                                Focuses on the most relevant frequency bands for speaker discrimination.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-green-500 bg-opacity-20 p-3 rounded-full mr-4">
+                            <i class="fas fa-layer-group text-green-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Multi-layer Aggregation</h4>
+                            <p class="text-slate-300 text-sm">
+                                Combines information from different neural network layers for richer representations.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="bg-purple-500 bg-opacity-20 p-3 rounded-full mr-4">
+                            <i class="fas fa-expand text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-1">Context Awareness</h4>
+                            <p class="text-slate-300 text-sm">
+                                Considers longer temporal contexts for more robust speaker modeling.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-blue-900 to-purple-900">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 tech-font">Ready to Protect Against Voice Cloning?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Start detecting synthetic voices today with our industry-leading technology.
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <button class="px-8 py-4 bg-white text-blue-900 rounded-lg font-bold hover:bg-gray-100 transition-all btn-hover-grow">
+                    <i class="fas fa-play mr-2"></i> Live Demo
+                </button>
+                <button class="px-8 py-4 bg-transparent border-2 border-white text-white rounded-lg font-bold hover:bg-white hover:text-blue-900 transition-all btn-hover-border-pulse">
+                    <i class="fas fa-file-alt mr-2"></i> Request Whitepaper
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-slate-900">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <span class="gradient-text">GHOST</span> <i class="fas fa-ghost ml-2"></i>
+                    </h3>
+                    <p class="text-slate-300 mb-4">
+                        Authenticating voices, not imitations. Real speech, real users — verified.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-blue-600 hover:text-blue-400 transition-colors">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Product</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Features</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">API</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Integrations</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Documentation</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Case Studies</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Research</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">About</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Contact</a></li>
+                        <li><a href="#" class="text-slate-300 hover:text-blue-400 transition-colors">Legal</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-slate-700">
+                <p class="text-slate-400 text-center">
+                    &copy; 2023 GHOST Voice Clone Defense. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme switching
+        function switchTheme(theme) {
+            document.body.className = theme + '-mode';
+        }
+
+        // Terminal simulation
+        const terminalOutput = document.getElementById('terminal-output');
+        const terminalInput = document.getElementById('terminal-input');
+        
+        terminalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const command = terminalInput.value;
+                terminalInput.value = '';
+                
+                // Add user command to output
+                terminalOutput.innerHTML += `<p>> ${command}</p>`;
+                
+                // Process command
+                let response = '';
+                if (command === 'help') {
+                    response = `<p>Available commands:</p>
+                               <p>- analyze: Start voice analysis</p>
+                               <p>- detect: Run clone detection</p>
+                               <p>- status: Show system status</p>
+                               <p>- clear: Clear terminal</p>`;
+                } else if (command === 'analyze') {
+                    response = `<p>Starting voice analysis...</p>
+                               <p>Recording audio sample...</p>
+                               <p>Processing with ECAPA-TDNN model...</p>
+                               <p>Analysis complete. Voice authenticity: 96% confidence</p>`;
+                } else if (command === 'detect') {
+                    response = `<p>Running deepfake detection...</p>
+                               <p>Checking for synthetic speech markers...</p>
+                               <p>Result: No clone detected (98% confidence)</p>`;
+                } else if (command === 'status') {
+                    response = `<p>System Status:</p>
+                               <p>- ECAPA-TDNN model: Active</p>
+                               <p>- Audio input: Ready</p>
+                               <p>- Memory usage: 42%</p>
+                               <p>- CPU load: 18%</p>`;
+                } else if (command === 'clear') {
+                    terminalOutput.innerHTML = '';
+                    return;
+                } else {
+                    response = `<p>Command not recognized. Type 'help' for available commands.</p>`;
+                }
+                
+                terminalOutput.innerHTML += response;
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+
+        // Audio visualizer
+        const audioVisualizer = document.getElementById('audio-visualizer');
+        const barCount = 50;
+        
+        for (let i = 0; i < barCount; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'audio-bar';
+            bar.style.left = `${(i / barCount) * 100}%`;
+            bar.style.height = `${Math.random() * 30 + 10}%`;
+            audioVisualizer.appendChild(bar);
+        }
+        
+        // Animate audio bars
+        function animateBars() {
+            const bars = document.querySelectorAll('.audio-bar');
+            bars.forEach(bar => {
+                const newHeight = Math.random() * 80 + 20;
+                bar.style.height = `${newHeight}%`;
+                
+                // Create gradient based on height
+                const hue = 160 + newHeight / 100 * 60;
+                bar.style.background = `linear-gradient(to top, hsl(${hue}, 80%, 50%), hsl(${hue + 20}, 80%, 50%))`;
+            });
+            
+            requestAnimationFrame(animateBars);
+        }
+        
+        animateBars();
+
+        // Clone tech items for infinite slider
+        const techSlider = document.querySelector('.tech-slider');
+        const techItems = document.querySelectorAll('.tech-item');
+        
+        techItems.forEach(item => {
+            const clone = item.cloneNode(true);
+            techSlider.appendChild(clone);
+        });
+    </script>
+</body>
+</html>

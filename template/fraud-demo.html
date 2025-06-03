@@ -1,0 +1,927 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHOST Identity Shield | Fraud Scoring Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --primary-dark: #0f172a;
+            --primary-light: #f8fafc;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: var(--primary-dark);
+            color: var(--primary-light);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        .glow {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+        }
+        
+        .hacker-bg {
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)),
+                url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMWUyYTM2Ij48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiMyMzNmNDkiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=');
+        }
+        
+        .matrix-bg {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .matrix-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(to bottom, transparent 95%, rgba(16, 185, 129, 0.1) 95%),
+                linear-gradient(to right, transparent 95%, rgba(16, 185, 129, 0.1) 95%);
+            background-size: 20px 20px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+        
+        .score-gauge {
+            width: 300px;
+            height: 150px;
+            position: relative;
+        }
+        
+        .score-gauge::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 150px 150px 0 0;
+            background: conic-gradient(
+                #10b981 0% 30%,
+                #f59e0b 30% 70%,
+                #ef4444 70% 100%
+            );
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 0 100%);
+            transform: rotate(180deg);
+        }
+        
+        .score-needle {
+            position: absolute;
+            width: 4px;
+            height: 80px;
+            background: white;
+            bottom: 0;
+            left: 50%;
+            transform-origin: bottom center;
+            transform: rotate(0deg);
+            transition: transform 1s ease-out;
+            z-index: 10;
+        }
+        
+        .tech-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .tech-icon:hover {
+            transform: translateY(-5px);
+            filter: drop-shadow(0 5px 15px rgba(59, 130, 246, 0.5));
+        }
+        
+        .btn-hover-effect-1:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-hover-effect-2:hover {
+            background-position: right center;
+        }
+        
+        .btn-hover-effect-3:hover {
+            letter-spacing: 1px;
+        }
+        
+        .btn-hover-effect-4:hover {
+            transform: skewX(-10deg);
+        }
+        
+        .btn-hover-effect-5:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+        
+        .radar-scan {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .radar-scan::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                transparent 0%,
+                rgba(16, 185, 129, 0.1) 50%,
+                transparent 100%
+            );
+            animation: radar 3s linear infinite;
+        }
+        
+        @keyframes radar {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100%);
+            }
+        }
+        
+        .matrix-transition {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .matrix-transition::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(transparent, rgba(16, 185, 129, 0.2), transparent),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="20" font-family="monospace" font-size="15" fill="rgba(16,185,129,0.3)">0101</text></svg>');
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .matrix-transition:hover::before {
+            opacity: 1;
+        }
+        
+        .neural-net-effect {
+            position: relative;
+        }
+        
+        .neural-net-effect::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at center, transparent 0%, var(--primary-dark) 70%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><line x1="10" y1="10" x2="90" y2="20" stroke="rgba(59,130,246,0.1)" stroke-width="1"/><line x1="20" y1="30" x2="80" y2="40" stroke="rgba(59,130,246,0.1)" stroke-width="1"/><line x1="30" y1="50" x2="70" y2="60" stroke="rgba(59,130,246,0.1)" stroke-width="1"/></svg>');
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .neural-net-effect:hover::before {
+            opacity: 1;
+        }
+        
+        .scrolling-tech {
+            animation: scrollTech 30s linear infinite;
+        }
+        
+        @keyframes scrollTech {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ef4444;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #3b82f6;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            10% { clip: rect(112px, 9999px, 76px, 0); }
+            20% { clip: rect(85px, 9999px, 77px, 0); }
+            30% { clip: rect(27px, 9999px, 97px, 0); }
+            40% { clip: rect(64px, 9999px, 98px, 0); }
+            50% { clip: rect(61px, 9999px, 85px, 0); }
+            60% { clip: rect(99px, 9999px, 114px, 0); }
+            70% { clip: rect(34px, 9999px, 115px, 0); }
+            80% { clip: rect(98px, 9999px, 129px, 0); }
+            90% { clip: rect(43px, 9999px, 96px, 0); }
+            100% { clip: rect(82px, 9999px, 64px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            10% { clip: rect(33px, 9999px, 69px, 0); }
+            20% { clip: rect(82px, 9999px, 128px, 0); }
+            30% { clip: rect(54px, 9999px, 68px, 0); }
+            40% { clip: rect(31px, 9999px, 128px, 0); }
+            50% { clip: rect(124px, 9999px, 56px, 0); }
+            60% { clip: rect(15px, 9999px, 16px, 0); }
+            70% { clip: rect(26px, 9999px, 115px, 0); }
+            80% { clip: rect(66px, 9999px, 39px, 0); }
+            90% { clip: rect(120px, 9999px, 58px, 0); }
+            100% { clip: rect(25px, 9999px, 18px, 0); }
+        }
+        
+        .light-mode {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        .light-mode .hacker-bg {
+            background-image: 
+                linear-gradient(rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 0.9)),
+                url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZTdlOGVhIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiNkNmQ3ZDgiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=');
+        }
+        
+        .default-mode {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+        
+        .default-mode .hacker-bg {
+            background-image: 
+                linear-gradient(rgba(30, 41, 59, 0.9), rgba(30, 41, 59, 0.9)),
+                url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMTUyMDNjIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiMyMDMwNDUiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=');
+        }
+    </style>
+</head>
+<body class="hacker-bg">
+    <!-- Theme Toggle -->
+    <div class="fixed top-4 right-4 z-50">
+        <div class="flex space-x-2">
+            <button id="darkMode" class="p-2 rounded-full bg-gray-800 text-blue-400 hover:bg-gray-700 transition">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button id="lightMode" class="p-2 rounded-full bg-gray-200 text-blue-600 hover:bg-gray-300 transition">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button id="defaultMode" class="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition">
+                <i class="fas fa-adjust"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="py-6 px-4 sm:px-6 lg:px-8 border-b border-gray-700">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="{% url 'index' %}" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-ghost text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold tech-font glow">GHOST <span class="text-blue-400">Identity Shield</span></h1>
+                </a>
+            </div>
+              <nav class="hidden md:flex space-x-8">
+                <a href="{% url 'index' %}#features" class="text-gray-300 hover:text-blue-400 transition">Features</a>
+                <a href="{% url 'index' %}#tech" class="text-gray-300 hover:text-blue-400 transition">How It Works</a>
+                <a href="{% url 'index' %}#about" class="text-gray-300 hover:text-blue-400 transition">About</a>
+                <a href="{% url 'index' %}#demo" class="text-gray-300 hover:text-blue-400 transition">Demo</a>
+                <a href="{% url 'index' %}#contact" class="text-gray-300 hover:text-blue-400 transition">Contact</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300">
+                        Login / Sign Up
+                    </a>
+                {% endif %}
+            </nav>
+            
+            <button class="md:hidden text-gray-300">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 matrix-bg">
+        <div class="container mx-auto text-center">
+            <div class="max-w-4xl mx-auto">
+                <span class="inline-block px-3 py-1 text-xs font-semibold bg-blue-900 text-blue-300 rounded-full mb-4">🚀 LATEST VERSION 2.4</span>
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 tech-font glitch" data-text="Fraud Scoring Engine">Fraud Scoring Engine</h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8">"Not just verification — calculation. Know the threat before it becomes an attack."</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#demo" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-white transition btn-hover-effect-1">
+                        <i class="fas fa-play-circle mr-2"></i> Live Demo
+                    </a>
+                    <a href="#how-it-works" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg font-medium text-white transition btn-hover-effect-2 bg-gradient-to-r from-blue-600 to-blue-800">
+                        <i class="fas fa-cogs mr-2"></i> How It Works
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section 
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-gray-800">
+        <div class="container mx-auto">
+            <div class="max-w-4xl mx-auto text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">How do you know when a verification attempt is risky — even if it looks real on the surface?</h2>
+                <p class="text-lg text-gray-300">That's where GHOST's Fraud Scoring Engine comes in. It doesn't just approve or reject. It calculates the probability of fraud in real time by combining all verification inputs — facial analysis, voice checks, behavioral patterns, and liveness responses — into a unified risk score.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-blue-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI-Powered Analysis</h3>
+                    <p class="text-gray-300">Our neural network evaluates multiple biometric factors simultaneously to detect subtle anomalies.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-bolt text-blue-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Real-Time Scoring</h3>
+                    <p class="text-gray-300">Get instant risk assessments with our optimized scoring algorithm that processes data in milliseconds.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-blue-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Proactive Protection</h3>
+                    <p class="text-gray-300">Flag potential threats before they cause harm with our predictive risk modeling.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    -->
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">⚙️ How It Works</h2>
+            
+            <div class="max-w-4xl mx-auto mb-16">
+                <div class="bg-gray-800 p-8 rounded-xl border border-gray-700">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400">🧬 Inputs Collected</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-700 p-3 rounded-lg flex items-center">
+                            <i class="fas fa-user-circle text-blue-400 mr-2"></i>
+                            <span>Face match score</span>
+                        </div>
+                        <div class="bg-gray-700 p-3 rounded-lg flex items-center">
+                            <i class="fas fa-robot text-red-400 mr-2"></i>
+                            <span>Deepfake detection</span>
+                        </div>
+                        <div class="bg-gray-700 p-3 rounded-lg flex items-center">
+                            <i class="fas fa-microphone text-green-400 mr-2"></i>
+                            <span>Voice match</span>
+                        </div>
+                        <div class="bg-gray-700 p-3 rounded-lg flex items-center">
+                            <i class="fas fa-heartbeat text-purple-400 mr-2"></i>
+                            <span>Liveness test</span>
+                        </div>
+                        <div class="bg-gray-700 p-3 rounded-lg flex items-center">
+                            <i class="fas fa-key text-yellow-400 mr-2"></i>
+                            <span>OTP accuracy</span>
+                        </div>
+                        <div class="bg-gray-700 p-3 rounded-lg flex items-center">
+                            <i class="fas fa-stopwatch text-pink-400 mr-2"></i>
+                            <span>Time per step</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto mb-16">
+                <div class="bg-gray-800 p-8 rounded-xl border border-gray-700">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400">🧠 Scoring Algorithm</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center mt-1 mr-4">
+                                <span class="text-blue-400">1</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Weighted Metrics</h4>
+                                <p class="text-gray-300">Each metric is weighted based on security relevance and historical fraud patterns.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center mt-1 mr-4">
+                                <span class="text-blue-400">2</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Neural Network Evaluation</h4>
+                                <p class="text-gray-300">AI model uses a trained neural net to evaluate biometric trust and behavioral patterns.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="w-8 h-8 bg-blue-900 rounded-full flex items-center justify-center mt-1 mr-4">
+                                <span class="text-blue-400">3</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Final Score</h4>
+                                <p class="text-gray-300">Outputs a fraud score between 0 (safe) to 100 (high risk) with confidence levels.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-800 p-8 rounded-xl border border-gray-700">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-400">🚦 Decision Engine</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-gray-700 p-6 rounded-lg border-l-4 border-green-500">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-green-900 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-check text-green-400"></i>
+                                </div>
+                                <h4 class="font-bold text-lg">Score ≤ 30</h4>
+                            </div>
+                            <p class="text-gray-300">✅ Safe - Automatic approval with no additional checks required.</p>
+                        </div>
+                        <div class="bg-gray-700 p-6 rounded-lg border-l-4 border-yellow-500">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-yellow-900 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-exclamation text-yellow-400"></i>
+                                </div>
+                                <h4 class="font-bold text-lg">31–70</h4>
+                            </div>
+                            <p class="text-gray-300">⚠️ Suspicious - Requires manual review or additional verification steps.</p>
+                        </div>
+                        <div class="bg-gray-700 p-6 rounded-lg border-l-4 border-red-500">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-red-900 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-times text-red-400"></i>
+                                </div>
+                                <h4 class="font-bold text-lg">70+</h4>
+                            </div>
+                            <p class="text-gray-300">❌ High Risk - Immediate block with fraud alert notifications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Demo Section -->
+    <section id="demo" class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-gray-800">
+        <div class="container mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">📊 Fraud Score Demo</h2>
+            
+            <div class="max-w-4xl mx-auto bg-gray-800 p-8 rounded-xl border border-gray-700">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <div class="score-gauge mx-auto mb-8">
+                            <div class="score-needle" id="scoreNeedle"></div>
+                        </div>
+                        <div class="text-center">
+                            <button id="generateScore" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium text-white transition btn-hover-effect-1">
+                                <i class="fas fa-random mr-2"></i> Generate Random Score
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-bold mb-6 text-center">🧠 Trust Analysis</h3>
+                        <div class="bg-gray-700 p-6 rounded-lg">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span>Face Check</span>
+                                    <span class="font-bold" id="faceScore">92%</span>
+                                    <span class="text-green-500">✅</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Voice Match</span>
+                                    <span class="font-bold" id="voiceScore">61%</span>
+                                    <span class="text-red-500">❌</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Liveness Test</span>
+                                    <span class="font-bold" id="livenessScore">85%</span>
+                                    <span class="text-green-500">✅</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Behavior Analysis</span>
+                                    <span class="font-bold" id="behaviorScore">74%</span>
+                                    <span class="text-yellow-500">⚠️</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>OTP Verification</span>
+                                    <span class="font-bold" id="otpScore">100%</span>
+                                    <span class="text-green-500">✅</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-4 border-t border-gray-600">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold">Final Score:</span>
+                                    <span class="text-2xl font-bold" id="finalScore">68</span>
+                                    <span class="px-3 py-1 rounded-full text-sm font-medium bg-yellow-900 text-yellow-300">Medium Risk</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button class="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-md font-medium text-white transition btn-hover-effect-3">
+                                <i class="fas fa-search mr-2"></i> View Detailed Scoring Explanation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto mt-12 grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 matrix-transition">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-chart-bar text-blue-400 mr-2"></i> Risk Distribution
+                    </h3>
+                    <canvas id="riskChart" height="200"></canvas>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-history text-blue-400 mr-2"></i> Recent Scores
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
+                            <span>User #A45B2</span>
+                            <span class="font-bold">24</span>
+                            <span class="text-green-500">✅ Safe</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
+                            <span>User #C78D3</span>
+                            <span class="font-bold">68</span>
+                            <span class="text-yellow-500">⚠️ Review</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
+                            <span>User #E12F9</span>
+                            <span class="font-bold">83</span>
+                            <span class="text-red-500">❌ Blocked</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Highlights -->
+    <section id="Feature Highlights" class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">🧩 Feature Highlights</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <a href="#" class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition btn-hover-effect-1">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-tachometer-alt text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Risk Dashboard</h3>
+                        <p class="text-gray-300 text-sm">Interactive visualization of fraud patterns and trends</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition btn-hover-effect-2 bg-gradient-to-r from-blue-900 to-blue-700">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-blue-800 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-calculator text-blue-300"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Score Calculation</h3>
+                        <p class="text-gray-300 text-sm">See how different factors affect the final risk score</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition btn-hover-effect-3">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-project-diagram text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Model Weights</h3>
+                        <p class="text-gray-300 text-sm">Understand how our AI evaluates different inputs</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition btn-hover-effect-4">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-question-circle text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Why Was I Flagged?</h3>
+                        <p class="text-gray-300 text-sm">Explainability report for transparency</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-800 to-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">🔁 Use Cases</h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-landmark text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Government Verification</h3>
+                    <p class="text-gray-300">Secure identity verification for public services and benefits distribution.</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-university text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Fintech Onboarding</h3>
+                    <p class="text-gray-300">Fraud prevention during digital account opening and KYC processes.</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-graduation-cap text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Exam Platforms</h3>
+                    <p class="text-gray-300">Auto-flagging impersonation attempts during online proctored exams.</p>
+                </div>
+                
+                <div class="bg-gray-800 p-6 rounded-xl border border-gray-700 hover:border-blue-500 transition">
+                    <div class="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-eye text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Surveillance Systems</h3>
+                    <p class="text-gray-300">Monitoring and alerting for suspicious authentication patterns.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Value Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-900">
+        <div class="container mx-auto max-w-4xl">
+            <div class="bg-gray-800 p-8 rounded-xl border border-blue-500">
+                <h2 class="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-400">🔐 Security Value Proposition</h2>
+                <p class="text-lg text-center mb-8">The Fraud Engine isn't biased or emotional — it's mathematical, instant, and always alert. It empowers systems to:</p>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gray-700 p-4 rounded-lg text-center">
+                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-stopwatch text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Respond Faster</h3>
+                        <p class="text-gray-300 text-sm">Real-time scoring enables immediate action</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg text-center">
+                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-user-shield text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Reduce Workload</h3>
+                        <p class="text-gray-300 text-sm">Automates 85% of manual review cases</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg text-center">
+                        <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-brain text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold mb-2">Catch More</h3>
+                        <p class="text-gray-300 text-sm">Detects subtle patterns humans miss</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-900 to-blue-700">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Fraud Detection?</h2>
+            <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Implement our AI-powered Fraud Scoring Engine and stay one step ahead of attackers.</p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#" class="px-6 py-3 bg-white hover:bg-gray-100 rounded-lg font-medium text-blue-800 transition btn-hover-effect-1">
+                    <i class="fas fa-shield-alt mr-2"></i> Start Risk Assessment
+                </a>
+                <a href="#" class="px-6 py-3 bg-transparent border-2 border-white hover:bg-white hover:bg-opacity-10 rounded-lg font-medium text-white transition btn-hover-effect-2">
+                    <i class="fas fa-map-marked-alt mr-2"></i> Explore Real-Time Fraud Map
+                </a>
+                <a href="#" class="px-6 py-3 bg-transparent border-2 border-white hover:bg-white hover:bg-opacity-10 rounded-lg font-medium text-white transition btn-hover-effect-3">
+                    <i class="fas fa-brain mr-2"></i> See How the AI Thinks
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 sm:px-6 lg:px-8 bg-gray-900 border-t border-gray-800">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                            <i class="fas fa-ghost text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold tech-font">GHOST</h3>
+                    </div>
+                    <p class="text-gray-400">Advanced identity protection powered by AI and behavioral biometrics.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Product</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Pricing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">API Docs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Integrations</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Documentation</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Case Studies</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">Legal</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2023 GHOST Identity Shield. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition"><i class="fab fa-github"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        document.getElementById('darkMode').addEventListener('click', () => {
+            document.body.classList.remove('light-mode', 'default-mode');
+            document.body.classList.add('dark-mode');
+        });
+        
+        document.getElementById('lightMode').addEventListener('click', () => {
+            document.body.classList.remove('dark-mode', 'default-mode');
+            document.body.classList.add('light-mode');
+        });
+        
+        document.getElementById('defaultMode').addEventListener('click', () => {
+            document.body.classList.remove('dark-mode', 'light-mode');
+            document.body.classList.add('default-mode');
+        });
+
+        // Generate Random Score
+        document.getElementById('generateScore').addEventListener('click', () => {
+            const finalScore = Math.floor(Math.random() * 101);
+            const faceScore = Math.min(100, Math.max(50, finalScore + Math.floor(Math.random() * 30) - 15));
+            const voiceScore = Math.min(100, Math.max(30, finalScore + Math.floor(Math.random() * 40) - 20));
+            const livenessScore = Math.min(100, Math.max(60, finalScore + Math.floor(Math.random() * 20) - 10));
+            const behaviorScore = Math.min(100, Math.max(40, finalScore + Math.floor(Math.random() * 25) - 12));
+            const otpScore = Math.min(100, Math.max(80, finalScore + Math.floor(Math.random() * 15) - 5));
+            
+            document.getElementById('faceScore').textContent = faceScore + '%';
+            document.getElementById('voiceScore').textContent = voiceScore + '%';
+            document.getElementById('livenessScore').textContent = livenessScore + '%';
+            document.getElementById('behaviorScore').textContent = behaviorScore + '%';
+            document.getElementById('otpScore').textContent = otpScore + '%';
+            document.getElementById('finalScore').textContent = finalScore;
+            
+            // Update needle position (0° = 0, 180° = 100)
+            const needle = document.getElementById('scoreNeedle');
+            const rotation = (finalScore / 100) * 180;
+            needle.style.transform = `rotate(${rotation}deg)`;
+            
+            // Update risk label
+            let riskLabel = '';
+            let riskClass = '';
+            if (finalScore <= 30) {
+                riskLabel = '✅ Safe';
+                riskClass = 'bg-green-900 text-green-300';
+            } else if (finalScore <= 70) {
+                riskLabel = '⚠️ Medium Risk';
+                riskClass = 'bg-yellow-900 text-yellow-300';
+            } else {
+                riskLabel = '❌ High Risk';
+                riskClass = 'bg-red-900 text-red-300';
+            }
+            
+            const riskElement = document.querySelector('#finalScore').nextElementSibling;
+            riskElement.className = `px-3 py-1 rounded-full text-sm font-medium ${riskClass}`;
+            riskElement.textContent = riskLabel.split(' ')[1];
+        });
+
+        // Initialize with a random score
+        document.getElementById('generateScore').click();
+
+        // Risk Distribution Chart
+        const riskCtx = document.getElementById('riskChart').getContext('2d');
+        const riskChart = new Chart(riskCtx, {
+            type: 'bar',
+            data: {
+                labels: ['0-10', '11-30', '31-50', '51-70', '71-90', '91-100'],
+                datasets: [{
+                    label: 'Fraud Cases',
+                    data: [5, 15, 25, 30, 20, 5],
+                    backgroundColor: [
+                        '#10b981',
+                        '#10b981',
+                        '#f59e0b',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#ef4444'
+                    ],
+                    borderColor: [
+                        '#059669',
+                        '#059669',
+                        '#d97706',
+                        '#d97706',
+                        '#dc2626',
+                        '#dc2626'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
