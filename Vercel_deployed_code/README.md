@@ -20,9 +20,7 @@ This folder contains the deployed version of the Ghost project's frontend files,
 └── Assets
     └── Images
         ├── Aayush.png
-        ├── Golu.jpg
         ├── Harsh.jpg
-        ├── Saumya.jpg
         └── Vanshika.jpg
 ```
 
